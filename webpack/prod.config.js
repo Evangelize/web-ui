@@ -187,6 +187,10 @@ module.exports = {
       { from: 'node_modules/chartist/dist/chartist.min.js', to: 'css'},
     ]),
     new webpack.DefinePlugin({
+      __CLIENT__: true,
+      __SERVER__: false,
+      __DEV__: false,
+      __DEVTOOLS__: false,
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
         BROWSER: 1,
