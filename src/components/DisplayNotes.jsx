@@ -57,7 +57,7 @@ class DisplayNotes extends Component {
     classes.deleteRecord("notes", note.id);
   }
   
-  handleCardTouchTap(note, e) {
+  handleCardClick(note, e) {
     this.setState({
       currentNote: note,
       showDialog: true
@@ -134,7 +134,7 @@ class DisplayNotes extends Component {
             <Col key={note.id} xs={12} sm={6} md={6} lg={6}>
               <Card>
                 <CardTitle title={note.title} style={(note.title) ? null : {display: 'none'}} />
-                <CardMedia onClick={((...args)=>this.handleCardTouchTap(note, ...args))}>
+                <CardMedia onClick={((...args)=>this.handleCardClick(note, ...args))}>
                 <div style={{padding: "10px 25px"}} dangerouslySetInnerHTML={{__html: note.text}} />
                 <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
                     <IconButton

@@ -50,13 +50,13 @@ class AcademicYear extends Component {
       <div>
         <Divider />
         <ListItem
-          onTouchTap={((...args) => this.navigate(`/schedule/academicYear/${item.id}`, ...args))}
+          onClick={((...args) => this.navigate(`/schedule/academicYear/${item.id}`, ...args))}
           primaryText={moment(item.endDate).format('YYYY')}
           rightIconButton={
             <IconMenu
               iconButtonElement={iconButtonElement}
-              onItemTouchTap={this.handleTap}
-              onTouchTap={this.handleManuTap}
+              onItemClick={this.handleTap}
+              onClick={this.handleManuTap}
             >
               <MenuItem>Edit</MenuItem>
               <MenuItem>Meeting Days</MenuItem>

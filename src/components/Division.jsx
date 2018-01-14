@@ -47,14 +47,14 @@ class Division extends Component {
       <div>
         <Divider />
         <ListItem
-          onTouchTap={((...args) => this.navigate(`/schedule/academicYearDivision/${item.id}`, ...args))}
+          onClick={((...args) => this.navigate(`/schedule/academicYearDivision/${item.id}`, ...args))}
           primaryText={item.title}
           secondaryText={`${moment(item.start).format('MMM DD YYYY')} - ${moment(item.end).format('MMM DD YYYY')}`}
           rightIconButton={
             <IconMenu
               iconButtonElement={iconButtonElement}
-              onItemTouchTap={this.handleTap}
-              onTouchTap={this.handleManuTap}
+              onItemClick={this.handleTap}
+              onClick={this.handleManuTap}
             >
               <MenuItem>Edit</MenuItem>
               <MenuItem>Delete</MenuItem>

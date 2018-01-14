@@ -4,6 +4,7 @@ import People from './people';
 import Divisions from './divisions';
 import Classes from './classes';
 import Notes from './notes';
+import Print from './print';
 import Utils from './utils';
 
 export default class {
@@ -12,6 +13,7 @@ export default class {
   divisions;
   classes;
   notes;
+  print;
   utils;
   events;
   request;
@@ -38,6 +40,7 @@ export default class {
     this.divisions = new Divisions(this.request);
     this.classes = new Classes(this.request);
     this.notes = new Notes(this.request);
+    this.print = new Print(this.request);
     this.auth = new Auth(this.request);
     this.utils = new Utils(this.request);
   }

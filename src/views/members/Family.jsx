@@ -272,7 +272,7 @@ class family extends Component {
                     <RaisedButton
                       label="Add People"
                       secondary
-                      onTouchTap={this.addPeople}
+                      onClick={this.addPeople}
                     />
                   </ToolbarGroup> : null
                 }

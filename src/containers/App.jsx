@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { browserHistory } from 'react-router';
 import AppBar from 'material-ui/AppBar';
@@ -15,26 +16,26 @@ import MediaQuery from 'react-responsive';
 @inject('auth', 'classes', 'settings')
 @observer
 class App extends Component {
-  constructor(props, context) {
-    super(props, context);
-    console.log('App', context);
-    const { classes, auth, settings } = props;
-    this.state = {
-      muiTheme: getMuiTheme(CustomColors),
-      open: false,
-      name: (auth.user) ? auth.userFullName : '',
-      modal: classes.isUpdating,
-    };
-  }
+  @observable muiTheme;
+  @observable open = false;
+  @observable name;
+  @observable modal;
 
   static childContextTypes = {
     muiTheme: PropTypes.object,
   }
 
+  componentWillMount() {
+    const { classes, auth, settings } = this.props;
+    this.muiTheme = getMuiTheme(CustomColors);
+    this.name = (auth.user) ? auth.userFullName : '';
+    this.modal = classes.isUpdating;
+  }
+
   getChildContext() {
     return {
-     muiTheme: this.state.muiTheme,
-   };
+      muiTheme: this.muiTheme,
+    };
   }
 
   handleLeftNavChange(url, e) {
@@ -56,8 +57,13 @@ class App extends Component {
     settings.leftNavOpen = state.open;
   }
 
+  onRequestChange = (open) => {
+    const { settings } = this.props;
+    settings.leftNavOpen = open;
+  }
+
   close() {
-    this.setState({ modal: false });
+    this.modal = false;
   }
 
   render() {
@@ -73,9 +79,9 @@ class App extends Component {
       opacity: 0.5,
       ...modalStyle,
     };
-    const textColor = this.state.muiTheme.rawTheme.palette.alternateTextColor;
+    const textColor = this.muiTheme.rawTheme.palette.alternateTextColor;
     const navHeader = {
-      backgroundColor: this.state.muiTheme.rawTheme.palette.primary1Color,
+      backgroundColor: this.muiTheme.rawTheme.palette.primary1Color,
       height: '12em',
       color: textColor,
       display: 'flex',
@@ -91,7 +97,7 @@ class App extends Component {
       alignItems: 'center',
       justifyContent: 'center',
       color: Colors.white,
-      backgroundColor: this.state.muiTheme.rawTheme.palette.accent1Color,
+      backgroundColor: this.muiTheme.rawTheme.palette.accent1Color,
       padding: '0px 10px',
     };
     // console.log("settings", this.props);
@@ -101,7 +107,7 @@ class App extends Component {
           aria-labelledby="modal-label"
           style={modalStyle}
           backdropStyle={backdropStyle}
-          show={this.state.modal}
+          show={this.modal}
           onHide={this.close}
         >
           <div />
@@ -122,8 +128,8 @@ class App extends Component {
           <Drawer
             ref="leftNav"
             docked={false}
-            disableSwipeToOpen
             open={settings.leftNavOpen}
+            onRequestChange={this.onRequestChange}
           >
             <div
               style={navHeader}
@@ -204,6 +210,11 @@ class App extends Component {
                   />,
                   <ListItem
                     key={3}
+                    onClick={((...args) => this.handleLeftNavChange('/members/groups', ...args))}
+                    primaryText="Groups"
+                  />,
+                  <ListItem
+                    key={4}
                     onClick={((...args) => this.handleLeftNavChange('/members/import', ...args))}
                     primaryText="Import"
                   />,

@@ -37,7 +37,7 @@ const AttendanceGraphs = inject('classes')(observer(({ classes, groupingId }) =>
       <Col xs={12} sm={12} md={6} lg={6} key={day.id}>
         <DashboardMediumGraph
           title={moment().weekday(day.dow).format('dddd') + ' Attendance'}
-          subtitle={"Past 8 weeks"}
+          subtitle={'Past 8 weeks'}
           avatar={<Avatar>A</Avatar>}
           lineChartData={classes.getGraphAttendance(day.dow, 8)}
           lineChartOptions={lineChartOptions}
@@ -123,15 +123,13 @@ class Dashboard extends Component {
   }
 
   render() {
-    console.log('dashboard:pre-render', moment().unix());
     const { classes } = this.props;
-    console.log('dashboard:render', moment().unix());
     return (
       <Row>
         <Grid fluid>
           {classes.isClassDay() ? <DivisionConfigsAttendance divisionConfigs={classes.getDivisionConfigs()} date={this.now} /> : null}
           <Masonry
-            className={"row"} 
+            className={'row'} 
             options={this.masonryOptions}
           >
             {classes.getDivisionConfigs().map((config, index) =>
@@ -156,7 +154,7 @@ class Dashboard extends Component {
                   <RaisedButton
                     label="Add Note"
                     secondary
-                    onClick={::this.handleNewNote}
+                    onClick={this.handleNewNote}
                   />
                 </ToolbarGroup>
               </Toolbar>

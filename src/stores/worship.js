@@ -118,6 +118,35 @@ export default class Worship {
     );
   }
 
+  getAttendanceTypes() {
+    return this.db.store.filter(
+      'attendanceTypes', [
+        filter((rec) => rec.deletedAt === null),
+        orderBy(['title'], ['absent']),
+      ]
+    );
+  }
+
+  getAttendanceCategoriesByType(type) {
+    const absent = (type === 'present') ? false : true;
+    return this.db.store.filter(
+      'attendanceTypes', [
+        filter((rec) => rec.deletedAt === null && rec.absent === absent),
+        orderBy(['title'], ['absent']),
+      ]
+    );
+  }
+
+  getDefaultAttendanceType(type) {
+    const absent = (type === 'present') ? false : true;
+    return this.db.store.filter(
+      'attendanceTypes', [
+        filter((rec) => rec.deletedAt === null && rec.defaultType && rec.absent === absent),
+        first,
+      ]
+    );
+  }
+
   @action updateServiceOrder(id, currentPos, newPos) {
     let record = this.db.store.filter(
       'worshipServices', [
@@ -164,23 +193,32 @@ export default class Worship {
     return retVal;
   }
 
+  @action updateAttendanceType(type) {
+    this.db.updateStore('attendanceTypes', type, false);
+  }
+
   getAttendanceByService(startMonth, endMonth) {
     startMonth = startMonth || moment(moment().format('MM/01/YYYY') + ' 00:00:00').subtract(3, 'month');
     endMonth = endMonth || moment(moment().format('MM/01/YYYY') + ' 00:00:00').valueOf();
+    const presentTypes = this.getAttendanceCategoriesByType('present').map(t => t.id);
     let dailyAttendance = [];
     let latest = this.db.store.filter(
       'memberAttendance', [
-        filter((rec) => rec.deletedAt === null && rec.attendanceDate >= startMonth && rec.attendanceDate <= endMonth),
+        filter((rec) => rec.deletedAt === null
+          && rec.attendanceDate >= startMonth
+          && rec.attendanceDate <= endMonth
+          && presentTypes.includes(rec.attendanceTypeId)
+        ),
         sortBy('attendanceDate'),
         reverse,
       ]
     );
     latest = latest.reduce(
       (map, d) => {
-        map[`${d.attendanceDate}|${d.worshipServiceId}`] = (map[`${d.attendanceDate}|${d.worshipServiceId}`] || 0) + d.count;
+        map[`${d.attendanceDate}|${d.worshipServiceId}`] = (map[`${d.attendanceDate}|${d.worshipServiceId}`] || 0) + 1;
         return map;
       },
-      Object.create(null)
+      {}
     );
     Object.keys(latest).forEach((day) => {
       dailyAttendance.push({
@@ -197,16 +235,60 @@ export default class Worship {
     return dailyAttendance;
   }
 
-  getPersonWorshipAttendance(worshipDate, type, worshipServiceId, personId) {
+  getPersonWorshipAttendance(worshipDate, worshipServiceId, personId) {
     return this.db.store.filter(
       'memberAttendance', [
         find((rec) => rec.deletedAt === null && 
           rec.attendanceDate === worshipDate && 
-          rec.attendanceTypeId <= type &&
           rec.worshipServiceId === worshipServiceId &&
           rec.personId === personId
         ),
       ]
     );
+  }
+
+  @action setMemberAttendanceType(attendanceTypeId, worshipServiceId, attendanceDate, personId) {
+    const ts = moment().valueOf();
+    let newRecord;
+    const attendance = this.db.store.filter(
+      'memberAttendance', [
+        find((rec) => rec.deletedAt === null && 
+          rec.attendanceDate === attendanceDate && 
+          rec.worshipServiceId === worshipServiceId &&
+          rec.personId === personId
+        ),
+      ]
+    );
+    if (attendance) {
+      newRecord = Object.assign(
+        {},
+        attendance,
+        {
+          attendanceDate,
+          attendanceTypeId,
+          worshipServiceId,
+          personId,
+          updatedAt: ts,
+          deletedAt: null,
+        },
+      );
+    } else {
+      newRecord = Object.assign(
+        {},
+        {
+          id: null,
+          attendanceDate,
+          attendanceTypeId,
+          worshipServiceId,
+          personId,
+          revision: null,
+          createdAt: ts,
+          updatedAt: ts,
+          deletedAt: null,
+        },
+      );
+    }
+    const retVal = this.db.updateStore('memberAttendance', newRecord, false);
+    return retVal;
   }
 }

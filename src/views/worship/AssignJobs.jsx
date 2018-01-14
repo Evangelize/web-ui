@@ -89,13 +89,13 @@ class AssignJobs extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        onTouchTap={((...args) => this.handleClose('cancel', ...args))}
+        onClick={((...args) => this.handleClose('cancel', ...args))}
       />,
       <FlatButton
         label="Change"
         primary
         keyboardFocused
-        onTouchTap={((...args) => this.handleClose('change', ...args))}
+        onClick={((...args) => this.handleClose('change', ...args))}
       />,
     ];
 
@@ -144,8 +144,8 @@ class AssignJobs extends Component {
                                   rightIconButton={
                                     <IconMenu
                                       iconButtonElement={iconButtonElement}
-                                      onItemTouchTap={((...args) => this.handleTap(job, service, date, person, ...args))}
-                                      onTouchTap={this.handleMenuTap}
+                                      onItemClick={((...args) => this.handleTap(job, service, date, person, ...args))}
+                                      onClick={this.handleMenuTap}
                                       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                                       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                                     >

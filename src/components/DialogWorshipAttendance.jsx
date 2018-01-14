@@ -16,8 +16,9 @@ export default class extends Component {
   @observable worshipDate = []
 
   componentWillMount() {
-    const { start } = this.props;
+    const { start, worship  } = this.props;
     this.worshipDate = (start) ? start.toDate() : null;
+    this.services = worship.getServicesByDate(this.worshipDate);
   }
 
   changeDate = (e, date) => {
@@ -34,11 +35,11 @@ export default class extends Component {
   };
 
   render() {
-    const { open, onClose, isEdit, start, onChange } = this.props;
+    const { open, onClose, isEdit, start, worship, onChange } = this.props;
     const actions = [
       <FlatButton
         label="Cancel"
-        onTouchTap={((...args) => onClose('cancel', ...args))}
+        onClick={((...args) => onClose('cancel', ...args))}
         id="cancel"
       />,
       <FlatButton
@@ -72,7 +73,7 @@ export default class extends Component {
             value={this.service}
             onChange={this.changeService}
           >
-            {this.services.map((s) =>
+            {worship.getServicesByDate(this.worshipDate).map((s) =>
               <MenuItem
                 key={s.id}
                 value={s.id}

@@ -51,8 +51,8 @@ class Job extends Component {
         rightIconButton={
           <IconMenu
             iconButtonElement={iconButtonElement}
-            onItemTouchTap={this.handleTap}
-            onTouchTap={this.handleManuTap}
+            onItemClick={this.handleTap}
+            onClick={this.handleManuTap}
             anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           >

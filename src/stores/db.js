@@ -3,7 +3,7 @@ import { create } from 'mobx-persist';
 import { filter, pick, sortBy, first, take, remove } from 'lodash/fp';
 import moment from 'moment-timezone';
 import iouuid from 'innodb-optimized-uuid';
-import { Database } from '../lib/db';
+import { Database } from './database';
 
 
 const hydrate = create();

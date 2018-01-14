@@ -1,10 +1,5 @@
-import {
-  observable,
-  autorun,
-  computed,
-  toJS,
-  action
-} from 'mobx';
+import Base from './Base';
+import { action } from 'mobx';
 import {
   filter,
   sortBy,
@@ -18,91 +13,11 @@ import {
   uniqBy
 } from 'lodash/fp';
 import moment from 'moment-timezone';
-import waterfall from 'async/waterfall';
-import change from 'percent-change';
-import Promise from 'bluebird';
 
-const personModel = {
-  entityId: null,
-  familyId: null,
-  cohortId: null,
-  lastName: null,
-  firstName: null,
-  familyPosition: null,
-  gender: null,
-  homePhoneNumber: null,
-  workPhoneNumber: null,
-  cellPhoneNumber: null,
-  emailAddress: null,
-  birthday: null,
-  nonChristian: 'n',
-  nonMember: 'n',
-  membershipStatus: null,
-  deceased: 'n',
-  collegeStudent: 'n',
-  photoUrl: null,
-  employer: null,
-  occupation: null,
-  createdAt: null,
-  updatedAt: null,
-  deletedAt: null,
-};
-
-
-export default class People {
-  api;
-  @observable db;
-  @observable events;
-  @observable peopleFilter;
-
-  constructor(db, events, api) {
-    if (db) {
-      this.setupDb(db);
-    }
-    if (events) {
-      this.setupEvents(events);
-    }
-    if (api) {
-      this.setupApi(api);
-    }
-  }
-
-  setupApi(api) {
-    this.api = api;
-  }
-
-  setupDb(db) {
-    this.db = db;
-  }
-
-  setupEvents(events) {
-    this.events = events;
-  }
-
-  isNumeric(num) {
-    return !isNaN(parseFloat(num)) && isFinite(num);
-  }
-
-  @action updateCollectionFields(collection, id, updates) {
-    return this.db.updateCollectionFields(collection, id, updates);
-  }
-
-  @action deleteRecord(collection, id) {
-    return this.db.deleteRecord(collection, id);
-  }
-
-  findPeople(search, type) {
-    const regex = new RegExp('^' + search, 'i');
-    return this.db.store.filter(
-      'people', [
-        filter((rec) => rec.deletedAt === null && regex.test(rec[type])),
-        sortBy(['lastName', 'firstName']),
-      ]
-    );
-  }
+export default class People extends Base {
 
   findFamilies(search) {
-    const regex = new RegExp('^' + search, 'i');
+    const regex = new RegExp(`^${search}`, 'i');
     return this.db.store.filter(
       'families', [
         filter((rec) => rec.deletedAt === null && regex.test(rec.name)),
@@ -127,6 +42,118 @@ export default class People {
         sortBy(['firstName']),
       ]
     );
+  }
+
+  getGroups() {
+    return this.db.store.filter(
+      'groups', [
+        filter((rec) => rec.deletedAt === null),
+        sortBy(['title']),
+      ]
+    );
+  }
+
+  findGroups(search) {
+    const regex = new RegExp(`^${search}`, 'i');
+    return this.db.store.filter(
+      'groups', [
+        filter((rec) => rec.deletedAt === null && regex.test(rec.title)),
+        sortBy(['name']),
+      ]
+    );
+  }
+
+  getGroup(id) {
+    return this.db.store.filter(
+      'groups', [
+        filter((rec) => rec.deletedAt === null && rec.id === id),
+        first,
+      ]
+    );
+  }
+
+  getGroupMembers(groupId) {
+    const people = this.db.store.filter(
+      'memberGroups', [
+        filter((rec) => rec.deletedAt === null && rec.groupId === groupId),
+        sortBy(['firstName']),
+      ]
+    );
+
+    return (people) ? people.map((person) => {
+      person.person = this.getPerson(person.personId);
+      return person;
+    }) : [];
+  }
+  
+
+  @action updateGroup(group) {
+    return this.db.updateStore('groups', group, false, false);
+  }
+
+  @action addPersonToGroup(personId, groupId) {
+    const ts = moment().valueOf();
+    let person = this.db.store.filter(
+      'memberGroups', [
+        filter((rec) => rec.deletedAt === null && rec.groupId === groupId && rec.personId === personId),
+        first,
+      ]
+    );
+    if (!person) {
+      const record = {
+        id: null,
+        entityId: null,
+        personId,
+        groupId,
+        createdAt: ts,
+        updatedAt: ts,
+        deletedAt: null,
+      };
+      person = this.db.updateStore('memberGroups', record, false, false);
+    }
+    return person;
+  }
+
+  @action deletePersonFromGroup(personId, groupId) {
+    const ts = moment().valueOf();
+    let retVal;
+    let person = this.db.store.filter(
+      'memberGroups', [
+        filter((rec) => rec.deletedAt === null && rec.groupId === groupId && rec.personId === personId),
+        first,
+      ]
+    );
+    if (person) {
+      retVal = this.deleteRecord('memberGroups', person.id)
+    }
+    return retVal;
+  }
+
+  findPeople(search, type, groupId, currentOnly) {
+    const regex = new RegExp(`^${search}`, 'i');
+    let retVal;
+    if (currentOnly) {
+      retVal = this.db.store.filter(
+        'people', [
+          filter((rec) => rec.deletedAt === null && regex.test(rec[type])),
+          sortBy(['lastName', 'firstName']),
+        ]
+      );
+    } else {
+      retVal = this.db.store.filter(
+        'people', [
+          filter((rec) => rec.deletedAt === null && regex.test(rec[type] && rec.membershipStatus === 'C')),
+          sortBy(['lastName', 'firstName']),
+        ]
+      );
+    }
+
+    if (groupId) {
+      const groupMembers = this.getGroupMembers(groupId).map(m => m.personId);
+      retVal = retVal.filter(r => groupMembers.includes(r.id))
+    }
+
+    return retVal;
   }
 
   getPerson(id) {

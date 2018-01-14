@@ -403,14 +403,14 @@ class ImportMembers extends Component {
                 <FlatButton
                   label="Back"
                   disabled={this.stepIndex === 0}
-                  onTouchTap={this.handlePrev}
+                  onClick={this.handlePrev}
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
                   label={this.stepIndex === 3 ? 'Finish' : 'Next'}
                   disabled={this.stepIndex === 4}
                   primary
-                  onTouchTap={this.handleNext}
+                  onClick={this.handleNext}
                 />
               </CardActions>
             </Card>

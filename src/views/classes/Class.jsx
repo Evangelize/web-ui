@@ -118,7 +118,7 @@ class Class extends Component {
                       <RaisedButton
                         label="Add Student"
                         secondary
-                        onTouchTap={this.addStudent}
+                        onClick={this.addStudent}
                       />
                     </ToolbarGroup>
                   }

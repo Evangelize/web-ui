@@ -1336,6 +1336,11 @@ export default class Classes {
     return retVal;
   }
 
+  async printDivisionPlacards(divisionId) {
+    const { data } = await this.api.print.divisionPlacards(divisionId);
+    return data;
+  }
+
   updateCollectionFields(collection, id, updates) {
     return this.db.updateCollectionFields(collection, id, updates);
   }

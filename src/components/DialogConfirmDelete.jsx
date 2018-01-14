@@ -11,14 +11,14 @@ function DialogConfirmDelete(props) {
   const actions = [
     <FlatButton
       label="No"
-      onTouchTap={((...args) => onClose('cancel', ...args))}
+      onClick={((...args) => onClose('cancel', ...args))}
       id="cancel"
     />,
     <FlatButton
       label="Yes"
       primary
       keyboardFocused
-      onTouchTap={((...args) => onClose('ok', ...args))}
+      onClick={((...args) => onClose('ok', ...args))}
       id="ok"
     />,
   ];

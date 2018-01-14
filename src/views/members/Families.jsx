@@ -73,7 +73,7 @@ class Families extends Component {
     browserHistory.push(path);
   }
 
-  handleTouchTap = (event) => {
+  handleClick = (event) => {
     // This prevents ghost click.
     event.preventDefault();
 
@@ -124,7 +124,7 @@ class Families extends Component {
                   <RaisedButton
                     label="Families"
                     secondary
-                    onTouchTap={this.handleTouchTap}
+                    onClick={this.handleClick}
                   />
                   <Popover
                     open={this.open}
@@ -134,7 +134,7 @@ class Families extends Component {
                     onRequestClose={this.handleRequestClose}
                   >
                     <Menu
-                      onItemTouchTap={((...args) => this.handleNavMenu(...args))}
+                      onItemClick={((...args) => this.handleNavMenu(...args))}
                     >
                       <MenuItem primaryText="Add Family" />
                       <MenuItem primaryText="Import" />

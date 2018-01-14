@@ -38,7 +38,7 @@ class DisplayPerson extends Component {
     const { person, badge } = this.props;
     const personPhoto = (person.photoUrl && person.photoUrl.length);
     const familyPhoto = (this.family && this.family.photoUrl && this.family.photoUrl.length);
-    let CustomAvatar = <Avatar>{person.firstName.charAt(0)}</Avatar>;
+    let CustomAvatar = (person.firstName) ? <Avatar>{person.firstName.charAt(0)}</Avatar> : null;
     if (personPhoto) {
       CustomAvatar = <Avatar src={person.photoUrl} />;
     } else if (familyPhoto) {
@@ -58,20 +58,30 @@ class DisplayPerson extends Component {
     onTap(obj.props.children.toLowerCase(), person);
   }
 
+  formatName = () => {
+    const { person, nameFormat } = this.props;
+    let name = `${person.firstName} ${person.lastName}`;
+    if (nameFormat) {
+      name = nameFormat(person);
+    }
+    return name
+  }
+
   render() {
     const { 
       person,
       secondaryText,
       secondaryTextLines,
       rightAvatar,
+      leftAvatar,
       rightMenuItems
     } = this.props;
-    const avatar = this.displayPhoto();
+    const avatar = (leftAvatar) ? leftAvatar(person) : this.displayPhoto();
     const rightIconButton = (rightMenuItems) ? 
       <IconMenu
         iconButtonElement={iconButtonElement}
-        onItemTouchTap={this.handleTap}
-        onTouchTap={this.handleMenuTap}
+        onItemClick={this.handleTap}
+        onClick={this.handleMenuTap}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
@@ -82,7 +92,7 @@ class DisplayPerson extends Component {
     return (
       <div key={person.id}>
         <ListItem
-          primaryText={`${person.firstName} ${person.lastName}`}
+          primaryText={this.formatName()}
           secondaryText={secondaryText}
           secondaryTextLines={secondaryTextLines}
           leftAvatar={avatar}

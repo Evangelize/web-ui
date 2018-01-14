@@ -198,13 +198,13 @@ class AddMember extends Component {
               <CardActions>
                 <RaisedButton
                   label="Cancel"
-                  onTouchTap={((...args) => this.navigate('/members/search', ...args))}
+                  onClick={((...args) => this.navigate('/members/search', ...args))}
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
                   label="Save"
                   primary
-                  onTouchTap={((...args) => this.handleSave(...args))}
+                  onClick={((...args) => this.handleSave(...args))}
                 />
               </CardActions>
             </Card>

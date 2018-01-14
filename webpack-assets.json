@@ -1,1 +1,10 @@
-{"javascript":{"app":"/dist/app-1c67ed15f9993159295a.js","vendor":"/dist/vendor-8dcbd3b70fce82d5ba77.js"},"styles":{},"assets":{},"webpack":{"version":"3.10.0"}}
+{
+  "javascript": {
+    "main": "/main-c7f6ab1e36edbf0da232.js"
+  },
+  "styles": {},
+  "assets": {},
+  "webpack": {
+    "version": "3.10.0"
+  }
+}

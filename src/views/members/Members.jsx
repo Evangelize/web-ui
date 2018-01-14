@@ -75,7 +75,7 @@ class Members extends Component {
     browserHistory.push(path);
   }
 
-  handleTouchTap = (event) => {
+  handleClick = (event) => {
     // This prevents ghost click.
     event.preventDefault();
 
@@ -140,7 +140,7 @@ class Members extends Component {
                   <RaisedButton
                     label="Manage Members"
                     secondary
-                    onTouchTap={this.handleTouchTap}
+                    onClick={this.handleClick}
                   />
                   <Popover
                     open={this.open}
@@ -150,7 +150,7 @@ class Members extends Component {
                     onRequestClose={this.handleRequestClose}
                   >
                     <Menu
-                      onItemTouchTap={((...args) => this.handleNavMenu(...args))}
+                      onItemClick={((...args) => this.handleNavMenu(...args))}
                     >
                       <MenuItem primaryText="Add Person" />
                       <MenuItem primaryText="Add Family" />

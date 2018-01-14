@@ -2,34 +2,37 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import App from './containers/App';
 import AddFamilyMember from './views/members/AddFamilyMember';
-import Dashboard from './views/Dashboard';
-import Families from './views/members/Families';
-import Family from './views/members/Family';
-import Login from './views/Login';
-import Member from './views/members/Member';
+import AddGroupMember from './views/members/AddGroupMember';
 import AddMember from './views/members/AddMember';
-import Members from './views/members/Members';
-import ImportMembers from './views/members/ImportMembers';
-import Schedules from './views/classes/Schedules';
-import Attendance from './views/classes/Attendance';
+import AttendanceTypes from './views/worship/AttendanceTypes';
+import AcademicYearDivisions from './views/classes/AcademicYearDivisions';
 import AddClassDayTeacher from './views/classes/AddClassDayTeacher';
 import AddClassStudents from './views/classes/AddClassStudents';
-import EditDayAttendance from './views/classes/EditDayAttendance';
-import EditWorshipAttendance from './views/worship/EditWorshipAttendance';
+import AssignJobs from './views/worship/AssignJobs';
+import Attendance from './views/classes/Attendance';
 import Classes from './views/classes/Classes';
 import Class from './views/classes/Class';
 import ClassGroupings from './views/classes/ClassGroupings';
 import ClassGroupingAcademicYears from './views/classes/ClassGroupingAcademicYears';
-import AcademicYearDivisions from './views/classes/AcademicYearDivisions';
+import Dashboard from './views/Dashboard';
 import DivisionClasses from './views/classes/DivisionClasses';
 import DivisionClassesSelect from './views/classes/DivisionClassesSelect';
+import EditDayAttendance from './views/classes/EditDayAttendance';
+import EditWorshipAttendance from './views/worship/EditWorshipAttendance';
+import Families from './views/members/Families';
+import Family from './views/members/Family';
+import Groups from './views/members/Groups';
+import ImportMembers from './views/members/ImportMembers';
+import Jobs from './views/worship/Jobs';
+import JobMembers from './views/worship/JobMembers';
+import Login from './views/Login';
+import Member from './views/members/Member';
 import MeetingDaysSelect from './views/classes/MeetingDaysSelect';
+import Members from './views/members/Members';
+import Schedules from './views/classes/Schedules';
 import WorshipServices from './views/worship/WorshipServices';
 import WorshipAttendance from './views/worship/WorshipAttendance';
 import WorshipJobsSelect from './views/worship/WorshipJobsSelect';
-import Jobs from './views/worship/Jobs';
-import JobMembers from './views/worship/JobMembers';
-import AssignJobs from './views/worship/AssignJobs';
 
 export default (auth) => {
   const requireAuth = (nextState, replace, callback) => {
@@ -111,6 +114,16 @@ export default (auth) => {
       <Route
         path="members/family/:id/add"
         component={AddFamilyMember}
+        onEnter={requireAuth}
+      />
+      <Route
+        path="members/groups"
+        component={Groups}
+        onEnter={requireAuth}
+      />
+      <Route
+        path="members/group/:id/add"
+        component={AddGroupMember}
         onEnter={requireAuth}
       />
       <Route
@@ -199,6 +212,13 @@ export default (auth) => {
         component={EditWorshipAttendance}
         onEnter={requireAuth}
       />
+      <Route
+        path="worship/attendanceTypes/manage"
+        exact
+        component={AttendanceTypes}
+        onEnter={requireAuth}
+      />
+      
     </Route>
   );
 };

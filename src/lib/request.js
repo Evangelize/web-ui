@@ -6,11 +6,13 @@ export default (authToken) => {
   const req = axios.create({
     baseURL: settings.serverUrl,
     timeout: 10000,
-    headers: { Authorization: `Bearer ${authToken}` },
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
   });
 
   req.interceptors.response.use(
-    null, 
+    null,
     (error) => {
       if (error.response && error.response.status === 401) {
         window.location = '/login';

@@ -9,7 +9,16 @@ import DisplayPerson from './DisplayPerson';
 @observer
 class RenderPeople extends Component {
   render() {
-    const { people, classes, badge, onTap, rightAvatar, rightMenuItems } = this.props;
+    const { 
+      people,
+      classes,
+      badge,
+      onTap,
+      leftAvatar,
+      rightAvatar,
+      rightMenuItems,
+      nameFormat,
+    } = this.props;
     let retVal;
     if (people.length > 0) {
       retVal = (
@@ -31,8 +40,10 @@ class RenderPeople extends Component {
                 </div>
               }
               secondaryTextLines={2}
+              leftAvatar={leftAvatar}
               rightAvatar={rightAvatar}
               rightMenuItems={rightMenuItems}
+              nameFormat={nameFormat}
               onTap={onTap}
             />
           )}

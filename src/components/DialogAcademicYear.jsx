@@ -14,14 +14,14 @@ export default class DialogAcademicYear extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        onTouchTap={((...args) => onClose('cancel', ...args))}
+        onClick={((...args) => onClose('cancel', ...args))}
         id="cancel"
       />,
       <FlatButton
         label="Ok"
         primary
         keyboardFocused
-        onTouchTap={((...args) => onClose('ok', ...args))}
+        onClick={((...args) => onClose('ok', ...args))}
         id="ok"
       />,
     ];

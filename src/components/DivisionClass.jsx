@@ -49,8 +49,8 @@ class DivisionClass extends Component {
           rightIconButton={
             <IconMenu
               iconButtonElement={iconButtonElement}
-              onItemTouchTap={this.handleTap}
-              onTouchTap={this.handleManuTap}
+              onItemClick={this.handleTap}
+              onClick={this.handleManuTap}
             >
               <MenuItem>Delete</MenuItem>
             </IconMenu>

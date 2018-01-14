@@ -160,7 +160,7 @@ class DisplayDivisionClass extends Component {
                 rightIconButton={
                   <IconMenu
                     iconButtonElement={iconButtonElement}
-                    onItemTouchTap={((...args) => this.handleEditDay(divisionClass, day, ...args))}
+                    onItemClick={((...args) => this.handleEditDay(divisionClass, day, ...args))}
                   >
                     <MenuItem>Edit</MenuItem>
                   </IconMenu>

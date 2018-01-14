@@ -6,6 +6,7 @@ import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
+import CardText from 'material-ui/Card/CardText';
 import Avatar from 'material-ui/Avatar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
@@ -74,7 +75,7 @@ export default class extends Component {
   }
 
   handleEditAttendance = (day, index, e) => {
-    const path = `/attendance/${this.classGrouping.id}/${day.date}`;
+    const path = `/worship/attendance/${day.date.split('|')[0]}/${day.date.split('|')[1]}`;
     this.navigate(path);
   }
 
@@ -87,6 +88,10 @@ export default class extends Component {
     const { worship } = this.props;
     this.classGrouping = worship.getDivisionConfig(value);
     // console.log(menuItem);
+  }
+
+  clickManageTypes = () => {
+    this.navigate('/worship/attendanceTypes/manage');
   }
 
   navigate = (path, e) => {
@@ -107,26 +112,20 @@ export default class extends Component {
                   secondary
                   onClick={this.handleOpenDialog}
                 />
+                <IconMenu
+                  iconButtonElement={
+                    <IconButton touch>
+                      <NavigationExpandMoreIcon />
+                    </IconButton>
+                  }
+                >
+                  <MenuItem
+                    primaryText="Manage Attendance Types"
+                    onClick={this.clickManageTypes}
+                  />
+                </IconMenu>
               </ToolbarGroup>
             </NavToolBar>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12} sm={4} md={6} lg={6}>
-            <DatePicker
-              hintText="Start Date"
-              floatingLabelText="Start Date"
-              value={moment(this.start).toDate()}
-              onChange={((...args) => this.changeDate('start', ...args))}
-            />
-          </Col>
-          <Col xs={12} sm={4} md={6} lg={6}>
-            <DatePicker
-              hintText="End Date"
-              floatingLabelText="End Date"
-              value={moment(this.end).toDate()}
-              onChange={((...args) => this.changeDate('end', ...args))}
-            />
           </Col>
         </Row>
         <Row>
@@ -139,6 +138,27 @@ export default class extends Component {
                   <Avatar>W</Avatar>
                 }
               />
+              <Divider />
+              <CardText>
+                <Row>
+                  <Col xs={12} sm={4} md={6} lg={6}>
+                    <DatePicker
+                      hintText="Start Date"
+                      floatingLabelText="Start Date"
+                      value={moment(this.start).toDate()}
+                      onChange={((...args) => this.changeDate('start', ...args))}
+                    />
+                  </Col>
+                  <Col xs={12} sm={4} md={6} lg={6}>
+                    <DatePicker
+                      hintText="End Date"
+                      floatingLabelText="End Date"
+                      value={moment(this.end).toDate()}
+                      onChange={((...args) => this.changeDate('end', ...args))}
+                    />
+                  </Col>
+                </Row>
+              </CardText>
               <CardMedia>
                 <List>
                   {worship.getAttendanceByService(this.start, this.end).map((day, index) =>
@@ -148,8 +168,8 @@ export default class extends Component {
                         key={index}
                         rightAvatar={<Avatar>{day.count}</Avatar>}
                         onClick={((...args) => this.handleEditAttendance(day, index, ...args))}
-                        primaryText={moment(day.date, 'x').format('dddd')}
-                        secondaryText={moment(day.date, 'x').format('MMMM Do YYYY')}
+                        primaryText={worship.getService(day.date.split('|')[1]).title}
+                        secondaryText={moment(day.date.split('|')[0], 'x').format('MMMM Do YYYY')}
                       />
                     </div>
                   )}

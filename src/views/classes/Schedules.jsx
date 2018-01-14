@@ -24,6 +24,27 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import NavToolBar from '../../components/NavToolBar';
 import DisplayDivisionClasses from '../../components/DisplayDivisionClasses';
 
+const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+}
+
 @inject('classes')
 @observer
 class Schedules extends Component {
@@ -111,9 +132,30 @@ class Schedules extends Component {
     this.openMenu = false;
   }
 
-  printPlacards = (event) => {
-    const url = `/api/print/division/${this.division}/placards`;
-    window.open(url, '_blank');
+  printPlacards = async (event) => {
+    const { classes } = this.props;
+    const data = await classes.printDivisionPlacards(this.division);
+    console.log(data);
+    if (data) {
+      const filename = `pdf-${new Date().getTime()}.pdf`;
+      if (typeof window.chrome !== 'undefined') {
+          // Chrome version
+        const link = document.createElement('a');
+        const contentType = 'application/pdf';
+        const blob = b64toBlob(data, contentType);
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+      } else if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          // IE version
+        const blob = new Blob([data], { type: 'application/pdf' });
+        window.navigator.msSaveBlob(blob, filename);
+      } else {
+          // Firefox version
+        const file = new File([data], filename, { type: 'application/force-download' });
+        window.open(URL.createObjectURL(file));
+      }
+    }
   }
 
   render() {
@@ -159,7 +201,7 @@ class Schedules extends Component {
                   <RaisedButton
                     label="Manage Schedules"
                     secondary
-                    onTouchTap={this.goToManageSchedule}
+                    onClick={this.goToManageSchedule}
                   />
                   <Popover
                     open={this.openMenu}
@@ -176,7 +218,7 @@ class Schedules extends Component {
                   <RaisedButton
                     label="Print"
                     secondary
-                    onTouchTap={this.printPlacards}
+                    onClick={this.printPlacards}
                   />
                 </ToolbarGroup>
               </NavToolBar>
@@ -237,7 +279,7 @@ class Schedules extends Component {
                     <MenuItem
                       value="manage-schedules"
                       primaryText="Manage Schedules"
-                      onTouchTap={this.goToManageSchedule}
+                      onClick={this.goToManageSchedule}
                     />
                   </IconMenu>
                 </ToolbarGroup>

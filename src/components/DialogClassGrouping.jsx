@@ -12,14 +12,14 @@ export default class DialogClassGrouping extends Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        onTouchTap={onCancel}
+        onClick={onCancel}
         id="cancel"
       />,
       <FlatButton
         label="Ok"
         primary
         keyboardFocused
-        onTouchTap={onOk}
+        onClick={onOk}
         id="ok"
       />,
     ];
