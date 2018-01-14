@@ -21,6 +21,7 @@ import Divider from 'material-ui/Divider';
 import { Grid, Row, Col } from 'react-bootstrap';
 import NavToolBar from '../../components/NavToolBar';
 import RenderPeople from '../../components/RenderPeople';
+import FormEditWrapper from '../../components/FormEditWrapper';
 
 const iconButtonElement = (
   <IconButton
@@ -43,18 +44,23 @@ export default class AddFamilyMember extends Component {
   @observable people = [];
   @observable searchValue;
 
-  componentWillMount() {
-    const { people, params } = this.props;
-    this.family = people.getFamily(params.id);
+  componentDidMount() {
+    this.getFamily();
   }
 
-  handleInputChange = (e) => {
-    const self = this;
-    const { people } = this.props;
-    this.searchValue = e.target.value;
-    if (this.searchValue.length > 1) {
-      this.people = people.findPeople(this.searchValue, this.searchType);
+  componentWillReceiveProps() {
+    this.getFamily();
+  }
+
+  getFamily = () => {
+    const { people, params } = this.props;
+    if (!this.family) {
+      this.family = people.getFamily(params.id);
     }
+  }
+
+  handleInputChange = (value) => {
+    this.searchValue = value;
   }
 
   handleSelectValueChange = (e, index, value) => {
@@ -82,71 +88,84 @@ export default class AddFamilyMember extends Component {
     const dropDownStyle = {
       marginTop: '15px',
     };
+    const searchResults = (this.searchValue && this.searchValue.length) ? people.findPeople(this.searchValue, this.searchType) : [];
     return (
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Add Family Members" goBackTo={`/members/family/${this.family.id}`} />
+            <NavToolBar navLabel="Add Family Members" goBackTo={(this.family) ? `/members/family/${this.family.id}` : null} />
           </Col>
         </Row>
-        <Row>
-          <Col xs={12} sm={3} md={4} lg={2}>
-            <DropDownMenu
-              value={this.searchType}
-              onChange={this.handleSelectValueChange}
-              style={dropDownStyle}
-            >
-              <MenuItem value={'lastName'} primaryText="Last Name" />
-              <MenuItem value={'firstName'} primaryText="First Name" />
-              <MenuItem value={'emailAddress'} primaryText="Email" />
-            </DropDownMenu>
-          </Col>
-          <Col xs={12} sm={9} md={8} lg={10}>
-            <TextField
-              className={'searchBox'}
-              ref="searchField"
-              floatingLabelText="Search"
-              value={this.searchValue}
-              onChange={this.handleInputChange}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12} sm={12} md={12} lg={12}>
-            <Card>
-              <CardHeader
-                title={this.family.name}
-                subtitle={this.family.familyName}
-                avatar={(this.family.name) ? <Avatar>{this.family.name.charAt(0)}</Avatar> : null}
-              />
-              <CardMedia>
-                <Subheader>Family Members</Subheader>
-                <RenderPeople
-                  people={people.getFamilyMembers(this.family.id)}
-                  onTap={this.menuItemTap}
-                  rightMenuItems={[
-                    'Delete',
-                  ]}
+        {(this.family) ?
+          <Row>
+            <Col xs={12} sm={12} md={12} lg={12}>
+              <Card>
+                <CardHeader
+                  title={this.family.name}
+                  subtitle={this.family.familyName}
+                  avatar={(this.family.name) ? <Avatar>{this.family.name.charAt(0)}</Avatar> : null}
                 />
-                <Divider />
-                <List>
-                  <Subheader>Search Results</Subheader>
-                  {this.people.map((person, index) =>
-                    <ListItem
-                      key={person.id}
-                      rightIconButton={
-                        <IconMenu iconButtonElement={iconButtonElement}>
-                          <MenuItem onClick={((...args) => this.menuItemTap(person, 'add', ...args))}>Add</MenuItem>
-                        </IconMenu>
-                      }
-                      primaryText={`${person.lastName}, ${person.firstName}`}
-                    />
-                  )}
-                </List>
-              </CardMedia>
-            </Card>
-          </Col>
-        </Row>
+                <CardMedia>
+                  <Row>
+                    <Col xs={12} sm={3} md={4} lg={2}>
+                      <DropDownMenu
+                        value={this.searchType}
+                        onChange={this.handleSelectValueChange}
+                        style={dropDownStyle}
+                      >
+                        <MenuItem value={'lastName'} primaryText="Last Name" />
+                        <MenuItem value={'firstName'} primaryText="First Name" />
+                        <MenuItem value={'emailAddress'} primaryText="Email" />
+                      </DropDownMenu>
+                    </Col>
+                    <Col xs={12} sm={9} md={8} lg={10}>
+                      <FormEditWrapper
+                        value={this.searchValue}
+                        onChange={this.handleInputChange}
+                        singleValue
+                      >
+                        <TextField
+                          className={'searchBox'}
+                          ref="searchField"
+                          floatingLabelText="Search"
+                          value={this.searchValue}
+                        />
+                      </FormEditWrapper>
+                    </Col>
+                  </Row>
+                </CardMedia>
+                <CardMedia>
+                  {searchResults.length ?
+                    <div>
+                      <List>
+                        <Subheader>Search Results</Subheader>
+                        {searchResults.map((person, index) =>
+                          <ListItem
+                            key={person.id}
+                            rightIconButton={
+                              <IconMenu iconButtonElement={iconButtonElement}>
+                                <MenuItem onClick={((...args) => this.menuItemTap(person, 'add', ...args))}>Add</MenuItem>
+                              </IconMenu>
+                            }
+                            primaryText={`${person.lastName}, ${person.firstName}`}
+                          />
+                        )}
+                      </List>
+                    </div> : null
+                  }
+                  <Subheader>Family Members</Subheader>
+                  <RenderPeople
+                    people={people.getFamilyMembers(this.family.id)}
+                    onTap={this.menuItemTap}
+                    rightMenuItems={[
+                      'Delete',
+                    ]}
+                  />
+                </CardMedia>
+              </Card>
+            </Col>
+          </Row> : null
+        }
       </Grid>
     );
   }

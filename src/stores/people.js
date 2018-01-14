@@ -135,14 +135,14 @@ export default class People extends Base {
     if (currentOnly) {
       retVal = this.db.store.filter(
         'people', [
-          filter((rec) => rec.deletedAt === null && regex.test(rec[type])),
+          filter((rec) => rec.deletedAt === null && regex.test(rec[type] && rec.membershipStatus === 'C')),
           sortBy(['lastName', 'firstName']),
         ]
       );
     } else {
       retVal = this.db.store.filter(
         'people', [
-          filter((rec) => rec.deletedAt === null && regex.test(rec[type] && rec.membershipStatus === 'C')),
+          filter((rec) => rec.deletedAt === null && regex.test(rec[type])),
           sortBy(['lastName', 'firstName']),
         ]
       );

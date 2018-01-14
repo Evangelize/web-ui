@@ -92,13 +92,27 @@ class Member extends Component {
   @observable notificationMsg = 'Photo uploaded';
 
 
-  componentWillMount() {
+  componentDidMount() {
+    this.getPerson();
+  }
+
+  componentWillReceiveProps() {
+    this.getPerson();
+  }
+
+  getPerson = () => {
     const { people, params } = this.props;
-    this.member = people.getPerson(params.id);
-    this.family = ('familyId' in this.member) ? people.getFamily(this.member.familyId) : null;
-    if (this.member.photoUrl) {
+    if (!this.member) {
+      this.member = people.getPerson(params.id);
+    }
+
+    if (!this.family && this.member) {
+      this.family = ('familyId' in this.member) ? people.getFamily(this.member.familyId) : null;
+    }
+
+    if (this.member && this.member.photoUrl && !this.photo) {
       this.photo = this.member.photoUrl;
-    } else if (this.family.photoUrl) {
+    } else if (this.member && this.family.photoUrl && !this.photo) {
       this.photo = this.family.photoUrl;
     }
   }
