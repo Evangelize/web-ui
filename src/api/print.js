@@ -7,15 +7,19 @@ export default class {
   }
 
   divisionPlacards(divisionId) {
-    return this.request.get(`${prefix}/division/${divisionId}/placards`);
+    return this.request(
+      'get',
+      `${prefix}/division/${divisionId}/placards`
+    );
   }
 
   set(id, index, key, value) {
     if (value) {
-      return this.request.post(
-        '/api/'+key+'s',
+      return this.request(
+        'post',
+        `/api/${key}s`,
         {
-          peopleId: id
+          peopleId: id,
         }
       )
       .then((response) => {
@@ -24,18 +28,19 @@ export default class {
           index,
           key,
           value,
-          data: response.data
+          data: response,
         });
       })
       .catch((response) => {
         return Promise.resolve({
           key,
-          data: response.data
+          data: response,
         });
       });
     } else {
-      return this.request.delete(
-        '/api/'+key+'s/'+id
+      return this.request(
+        'delete',
+        `/api/${key}s/${id}`
       )
       .then((response) => {
         return Promise.resolve({
@@ -43,13 +48,13 @@ export default class {
           index,
           key,
           value,
-          data: response.data
+          data: response,
         });
       })
       .catch((response) => {
         return Promise.resolve({
           key,
-          data: response.data
+          data: response,
         });
       });
     }

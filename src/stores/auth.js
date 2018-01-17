@@ -148,16 +148,22 @@ export default class Auth {
     this.db.setEntityId(this.user.db.user.entityId || null);
     const tokn = jwtDecode(jwt);
     Cookie.set(accessToken, jwt, { expires: moment(tokn.exp, 'X').toDate() });
-    const { data } = await this.getAllTables();
-    const payload = {
-      payload: {
-        data: {
-          collection: data,
-          type: 'initialize',
+    try {
+      const data = await this.getAllTables();
+      const payload = {
+        payload: {
+          data: {
+            collection: data,
+            type: 'initialize',
+          },
         },
-      },
-    };
-    this.events.emit('db', payload);
+      };
+      this.events.emit('db', payload);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log(error);
+      }
+    }
     // this.setupUserProfile()
     return this.user;
   }

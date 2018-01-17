@@ -8,15 +8,17 @@ export default class {
   }
 
   getConfigs() {
-   return this.request.get('/api/divisions/configs')
-    .then(function (response) {
+    return this.request(
+      'get',
+      '/api/divisions/configs'
+    ).then((response) => {
       return Promise.resolve({
-        divisionConfigs: response.data
+        divisionConfigs: response.data,
       });
     })
-    .catch(function (response) {
+    .catch((response) => {
       return Promise.resolve({
-        data: response.data
+        data: response.data,
       });
     });
   }

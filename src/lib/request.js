@@ -11,15 +11,18 @@ export default (authToken) => {
     },
   });
 
-  req.interceptors.response.use(
-    null,
-    (error) => {
-      if (error.response && error.response.status === 401) {
-        window.location = '/login';
-      }
-      console.log('error', error);
-      throw error;
+  const handleRequest = async (type, url, body, ignoreError) => {
+    let results;
+    try {
+      const response = await req[type](url, body);
+      results = response.data;
+    } catch (err) {
+      console.log(err, ignoreError);
+      results = err;
+      if (!ignoreError) window.location = '/login';
     }
-  );
-  return req;
+    return results;
+  };
+
+  return handleRequest;
 };

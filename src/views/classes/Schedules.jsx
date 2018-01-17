@@ -158,6 +158,12 @@ class Schedules extends Component {
     }
   }
 
+  manageScheduleClick = (event, menuItem, index) => {
+    if (menuItem.props.value === 'timeline') {
+      browserHistory.push('/schedules/timeline');
+    }
+  }
+
   render() {
     const { configs, classes } = this.props;
     const tableStyle = {
@@ -203,23 +209,23 @@ class Schedules extends Component {
                     secondary
                     onClick={this.goToManageSchedule}
                   />
-                  <Popover
-                    open={this.openMenu}
-                    anchorEl={this.anchorEl}
-                    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-                    targetOrigin={{ horizontal: 'left', vertical: 'top' }}
-                    onRequestClose={this.handleRequestClose}
-                  >
-                    <Menu>
-                      <MenuItem value="new" primaryText="Add New Academic Year" />
-                      <MenuItem value="edit" primaryText="Edit Academic Years" />
-                    </Menu>
-                  </Popover>
                   <RaisedButton
                     label="Print"
                     secondary
                     onClick={this.printPlacards}
                   />
+                  <IconMenu
+                    iconButtonElement={
+                      <IconButton touch>
+                        <NavigationExpandMoreIcon />
+                      </IconButton>
+                    }
+                    onItemClick={this.manageScheduleClick}
+                  >
+                    <MenuItem value="new" primaryText="Add New Academic Year" />
+                    <MenuItem value="edit" primaryText="Edit Academic Years" />
+                    <MenuItem value="timeline" primaryText="Timeline" />
+                  </IconMenu>
                 </ToolbarGroup>
               </NavToolBar>
             </MediaQuery>

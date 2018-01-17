@@ -231,4 +231,15 @@ export default class People extends Base {
     );
   }
 
+  async getPersonLogins(personId) {
+    return await this.api.people.getPersonLogins(personId);
+  }
+
+  async getUnconnectedLogins() {
+    return await this.api.people.getUnconnectedLogins();
+  }
+
+  async connectLogin(personId, entityId, loginId) {
+    return await this.api.people.connectLogin(personId, entityId, loginId);
+  }
 }

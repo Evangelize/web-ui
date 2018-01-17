@@ -127,7 +127,10 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'happypack/loader?id=jsx',
-        include: [path.resolve(__dirname, '../src')],
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+        ],
       }, {
         test: /\.json$/,
         loader: 'happypack/loader?id=json',
@@ -139,7 +142,10 @@ module.exports = {
       }, {
         test: /\.scss$/,
         loader: 'happypack/loader?id=sass',
-        include: [path.resolve(__dirname, '../src')],
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+        ],
       }, {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
@@ -260,7 +266,6 @@ module.exports = {
         options: {
           modules: true,
           importLoaders: 2,
-          sourceMap: true,
           localIdentName: '[local]___[hash:base64:5]',
         },
       }, {

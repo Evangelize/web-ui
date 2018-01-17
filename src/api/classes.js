@@ -5,96 +5,99 @@ export default class {
     this.request = request;
   }
 
-  manageTeacher(type, divisionConfigId, yearId, divisionId, divisionClassId, day, personId, opts=null) {
+  manageTeacher(type, divisionConfigId, yearId, divisionId, divisionClassId, day, personId, opts = null) {
     switch (type) {
-      case "add":
-        return this.request.post(
-          '/api/classes/'+divisionClassId+'/teacher',
-         {
-           divisionClassId: divisionClassId,
-           peopleId: personId,
-           day: day
-         }
+      case 'add':
+        return this.request(
+          'post',
+          `/api/classes/${divisionClassId}/teacher`,
+          {
+            divisionClassId,
+            peopleId: personId,
+            day,
+          }
         )
-        .then(function (response) {
+        .then((response) => {
           return Promise.resolve({
-            data: response.data,
-            divisionConfigId: divisionConfigId,
-            yearId: yearId,
-            divisionId: divisionId,
-            divisionClassId: divisionClassId
+            data: response,
+            divisionConfigId,
+            yearId,
+            divisionId,
+            divisionClassId,
           });
         })
-        .catch(function (response) {
+        .catch((response) => {
           return Promise.resolve({
-            data: response.data
+            data: response,
           });
         });
-      case "delete":
-        return this.request.delete(
-          '/api/classes/'+divisionClassId+'/teacher/'+personId
+      case 'delete':
+        return this.request(
+          'delete',
+          `/api/classes/${divisionClassId}/teacher/${personId}`
         )
-        .then(function (response) {
+        .then((response) => {
           return Promise.resolve({
-            data: response.data,
-            divisionConfigId: divisionConfigId,
-            yearId: yearId,
-            divisionId: divisionId,
-            divisionClassId: divisionClassId
+            data: response,
+            divisionConfigId,
+            yearId,
+            divisionId,
+            divisionClassId,
           });
         })
-        .catch(function (response) {
+        .catch((response) => {
           return Promise.resolve({
-            data: response.data
+            data: response,
           });
         });
-      case "confirm":
-      case "unconfirm":
-        return this.request.put(
-          '/api/classes/'+divisionClassId+'/teacher/'+personId,
-         {
-           confirmed: opts.confirmed
-         }
+      case 'confirm':
+      case 'unconfirm':
+        return this.request(
+          'put',
+          `/api/classes/${divisionClassId}/teacher/${personId}`,
+          {
+            confirmed: opts.confirmed,
+          }
         )
-        .then(function (response) {
+        .then((response) => {
           return Promise.resolve({
-            data: response.data,
-            divisionConfigId: divisionConfigId,
-            yearId: yearId,
-            divisionId: divisionId,
-            divisionClassId: divisionClassId
+            data: response,
+            divisionConfigId,
+            yearId,
+            divisionId,
+            divisionClassId,
           });
         })
-        .catch(function (response) {
+        .catch((response) => {
           return Promise.resolve({
-            data: response.data
+            data: response,
           });
         });
       default:
         break;
-
-    };
+    }
   }
 
   updateClassAttendance(divisionClassId, day, attendanceDate, count) {
-    return this.request.post(
-      '/api/classes/'+divisionClassId+'/attendance/'+day,
-     {
-       attendanceDate: attendanceDate,
-       count: count
-     }
+    return this.request(
+      'post',
+      `/api/classes/${divisionClassId}/attendance/${day}`,
+      {
+        attendanceDate,
+        count,
+      }
     )
-    .then(function (response) {
+    .then((response) => {
       return Promise.resolve({
-        data: response.data,
-        divisionClassId: divisionClassId,
-        attendanceDate: attendanceDate,
-        day: day
+        data: response,
+        divisionClassId,
+        attendanceDate,
+        day,
       });
     })
-    .catch(function (response) {
+    .catch((response) => {
       return Promise.resolve({
-        data: response.data
+        data: response,
       });
     });
   }

@@ -11,7 +11,7 @@ export class Database {
   @persist('map', Tables.Classes) @observable classes = observable.map()
   @persist('map', Tables.DivisionClassAttendance) @observable divisionClassAttendance = observable.map()
   @persist('map', Tables.DivisionClassTeacher) @observable divisionClassTeachers = observable.map()
-  @persist('map', Tables.DivisionClasse) @observable divisionClasses = observable.map()
+  @persist('map', Tables.DivisionClass) @observable divisionClasses = observable.map()
   @persist('map', Tables.DivisionConfig) @observable divisionConfigs = observable.map()
   @persist('map', Tables.DivisionYear) @observable divisionYears = observable.map()
   @persist('map', Tables.Division) @observable divisions = observable.map()
@@ -42,17 +42,22 @@ export class Database {
 
   initialize(data) {
     const self = this;
-    this.setLastUpdate();
+    let isAnUpdate = false;
     Object.keys(data).forEach((table) => {
       const newData = data[table];
       const id = (table === 'users') ? 'peopleId' : 'id';
       if (newData.length) {
+        isAnUpdate = true;
         console.log(table, id);
         const existing = self[table];
         const values = new Map(newData.map((i) => [i[id], i]));
         existing.merge(values);
       }
     });
+
+    if (isAnUpdate) {
+      this.setLastUpdate();
+    }
     return this;
   }
 

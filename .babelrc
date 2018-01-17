@@ -4,6 +4,8 @@
     [
       "env",
       {
+        "loose": true,
+        "modules": false,
         "targets": {
           "browsers": ["last 2 versions", "IE >= 8"],
           "node": "current"
@@ -11,16 +13,13 @@
         "useBuiltIns": "entry"
       }
     ],
-    "stage-0",
-    "es2015"
+    "stage-0"
   ],
   "sourceMaps": true,
   "retainLines": true,
   "plugins": [
     "fast-async",
     "transform-decorators-legacy",
-    "transform-class-properties",
-    "add-module-exports",
     "transform-react-jsx",
     "react-loadable/babel"
   ],

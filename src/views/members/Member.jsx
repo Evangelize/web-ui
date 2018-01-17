@@ -8,11 +8,14 @@ import Masonry from 'react-masonry-component';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
+import Checkbox from 'material-ui/Checkbox';
 import Avatar from 'material-ui/Avatar';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Divider from 'material-ui/Divider';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import SelectField from 'material-ui/SelectField';
 import Snackbar from 'material-ui/Snackbar';
 import MenuItem from 'material-ui/MenuItem';
@@ -25,6 +28,7 @@ import Slider from 'material-ui/Slider';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { Grid, Row, Col } from 'react-bootstrap';
 import AvatarEditor from 'react-avatar-editor';
+import startCase from 'lodash/startCase';
 import NavToolBar from '../../components/NavToolBar';
 import MaskedInput from '../../components/MaskedInput';
 
@@ -90,7 +94,10 @@ class Member extends Component {
   }
   @observable showNotification = false;
   @observable notificationMsg = 'Photo uploaded';
-
+  @observable logins = [];
+  @observable selectedLogin;
+  @observable open = false;
+  @observable unconnectedLogins = [];
 
   componentDidMount() {
     this.getPerson();
@@ -102,8 +109,14 @@ class Member extends Component {
 
   getPerson = () => {
     const { people, params } = this.props;
+    const self = this;
     if (!this.member) {
       this.member = people.getPerson(params.id);
+      people.getPersonLogins(params.id).then(
+        (data) => {
+          self.logins = data;
+        }
+      );
     }
 
     if (!this.family && this.member) {
@@ -193,6 +206,34 @@ class Member extends Component {
     people.db.updateCollectionFields('people', this.member.id, record);
   }
 
+  handleOpen = () => {
+    const self = this;
+    const { people } = this.props;
+    people.getUnconnectedLogins().then(
+      (data) => {
+        self.unconnectedLogins = data;
+      }
+    );
+    this.open = true;
+  }
+
+  handleClose = async (type, e) => {
+    const self = this;
+    this.open = false;
+    const { people, params } = this.props;
+    console.log(e);
+    if (type === 'select') {
+      await people.connectLogin(this.member.id, this.member.entityId, this.selectedLogin);
+      people.getPersonLogins(params.id).then(
+        (data) => {
+          self.logins = data;
+        }
+      );
+    } else {
+      this.selectedLogin = null;
+    }
+  }
+
   updateTitle(e) {
     const { people } = this.props;
     const { params } = this.props;
@@ -233,6 +274,11 @@ class Member extends Component {
     this.renderPreview();
   }
 
+  selectLogin = (id, e, value) => {
+    console.log(id);
+    this.selectedLogin = id;
+  }
+
   setEditorRef = (editor) => {
     this.editor = editor;
   }
@@ -243,13 +289,37 @@ class Member extends Component {
 
   render() {
     const { people } = this.props;
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={((...args) => this.handleClose('cancel', ...args))}
+      />,
+      <FlatButton
+        label="Select"
+        primary={true}
+        keyboardFocused={true}
+        onClick={((...args) => this.handleClose('select', ...args))}
+      />,
+    ];
+
     let retVal;
     if (this.member) {
       retVal = (
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel="Member" goBackTo="/members/search" />
+              <NavToolBar navLabel="Member" goBackTo="/members/search">
+                <ToolbarGroup lastChild style={{ float: 'right' }}>
+                  {(this.slideIndex === 'logins') ?
+                    <RaisedButton
+                      secondary
+                      label="Connect to social login"
+                      onClick={this.handleOpen}
+                    /> : null
+                  }
+                </ToolbarGroup>
+              </NavToolBar>
             </Col>
           </Row>
           <Row>
@@ -365,6 +435,24 @@ class Member extends Component {
                         <MenuItem value={'S'} primaryText="Spouse" />
                         <MenuItem value={'C'} primaryText="Child" />
                       </SelectField>
+                    </Tab>
+                    <Tab
+                      label="Logins"
+                      value={'logins'}
+                    >
+                      <Row>
+                        <Col xs={12} sm={12} md={12} lg={12}>
+                          <List>
+                            {this.logins.map(login =>
+                              <ListItem
+                                key={login.id}
+                                primaryText={`${login.person.displayName} (${login.person.email})`}
+                                secondaryText={`${startCase(login.type)} ${String.fromCharCode(8226)} ${login.externalId}`}
+                              />
+                            )}
+                          </List>
+                        </Col>
+                      </Row>
                     </Tab>
                     <Tab
                       label="Pictures"
@@ -505,6 +593,31 @@ class Member extends Component {
               />
             </Col>
           </Row>
+          <Dialog
+            title="Unconnected Social Logins"
+            actions={actions}
+            modal={false}
+            open={this.open}
+            onRequestClose={this.handleClose}
+            autoScrollBodyContent
+          >
+            <List>
+              {this.unconnectedLogins.map(login =>
+                <ListItem
+                  checked={this.selectedLogin === login.id}
+                  key={login.id}
+                  leftCheckbox={
+                    <Checkbox
+                      onCheck={((...args) => this.selectLogin(login.id, ...args))}
+                      value={login.id}
+                    />
+                  }
+                  primaryText={login.person.displayName}
+                  secondaryText={login.person.email}
+                />
+              )}
+            </List>
+          </Dialog>
         </Grid>
       );
     } else {

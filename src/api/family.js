@@ -1,5 +1,4 @@
 const prefix = '/api/family';
-const TIMEOUT = 100;
 
 export default class {
   request;
@@ -9,73 +8,76 @@ export default class {
   }
 
   get(key, filter) {
-    return this.request.get(`${prefix}/search/${key}/${filter}`)
-    .then((response) => {
+    return this.request(
+      'get',
+      `${prefix}/search/${key}/${filter}`
+    ).then((response) => {
       //console.log(response);
       return Promise.resolve({
-        key: key,
-        filter: filter,
-        data: response.data
+        key,
+        filter,
+        data: response,
       });
     })
     .catch((response) => {
       return Promise.resolve({
-        key: key,
-        filter: filter,
-        data: response.data
+        key,
+        filter,
+        data: response,
       });
     });
   }
 
   set(id, index, key, value) {
     if (value) {
-      return this.request.post(
-        '/api/'+key+'s',
+      return this.request(
+        'post',
+        `/api/${key}s`,
         {
-          peopleId: id
+          peopleId: id,
         }
       )
       .then((response) => {
         return Promise.resolve({
-          id: id,
-          index: index,
-          key: key,
-          value: value,
-          data: response.data
+          id,
+          index,
+          key,
+          value,
+          data: response,
         });
       })
       .catch((response) => {
         return Promise.resolve({
-          key: key,
-          filter: filter,
-          data: response.data
+          key,
+          data: response,
         });
       });
     } else {
-      return request.delete(
-        '/api/'+key+'s/'+id
+      return request(
+        'delete',
+        `/api/${key}s/${id}`
       )
       .then((response) => {
         return Promise.resolve({
-          id: id,
-          index: index,
-          key: key,
-          value: value,
-          data: response.data
+          id,
+          index,
+          key,
+          value,
+          data: response,
         });
       })
       .catch((response) => {
         return Promise.resolve({
-          key: key,
-          filter: filter,
-          data: response.data
+          key,
+          data: response,
         });
       });
     }
   }
 
   uploadAvatar(id, type, file, fileName, mimeType, entityId) {
-    return request.post(
+    return this.request(
+      'post',
       `${prefix}/${id}/avatar`,
       {
         file,

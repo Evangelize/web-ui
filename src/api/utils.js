@@ -8,7 +8,8 @@ export default class {
   }
 
   uploadAvatar(id, type, file, fileName, mimeType, entityId) {
-    return this.request.post(
+    return this.request(
+      'post',
       `${prefix}/upload/${id}/avatar`,
       {
         file,
@@ -21,11 +22,13 @@ export default class {
   }
 
   getAllTables(lastUpdate) {
-    return this.request.post(
+    return this.request(
+      'post',
       `${prefix}/getAllTables`,
       {
-        lastUpdate
-      }
+        lastUpdate,
+      },
+      true
     );
   }
 }

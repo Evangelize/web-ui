@@ -16,6 +16,8 @@ import ToolbarGroup from 'material-ui/Toolbar/ToolbarGroup';
 import ToolbarTitle from 'material-ui/Toolbar/ToolbarTitle';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Grid, Row, Col } from 'react-bootstrap';
+import UnknownUserProfile from '../components/UnknownUserProfile';
+
 const lineChartOptions = {
   low: 0,
   showArea: true,
@@ -80,7 +82,7 @@ const InfoBoxes = inject('classes')(observer(({ classes, groupingId }) =>
   </Row>
 ));
 
-@inject('classes', 'settings')
+@inject('classes', 'settings', 'auth')
 @observer
 class Dashboard extends Component {
   @observable showDialog = false;
@@ -123,48 +125,65 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    return (
-      <Row>
-        <Grid fluid>
-          {classes.isClassDay() ? <DivisionConfigsAttendance divisionConfigs={classes.getDivisionConfigs()} date={this.now} /> : null}
-          <Masonry
-            className={'row'} 
-            options={this.masonryOptions}
-          >
-            {classes.getDivisionConfigs().map((config, index) =>
-              <Col
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                key={config.id}
-              >
-                <AttendanceGraphs groupingId={config.id} />
-                <InfoBoxes groupingId={config.id} />
+    const { classes, auth } = this.props;
+    let retVal;
+    if (auth.user.db && auth.user.db.person) {
+      retVal = (
+        <Row>
+          <Grid fluid>
+            {classes.isClassDay() ? <DivisionConfigsAttendance divisionConfigs={classes.getDivisionConfigs()} date={this.now} /> : null}
+            <Masonry
+              className={'row'} 
+              options={this.masonryOptions}
+            >
+              {classes.getDivisionConfigs().map((config, index) =>
+                <Col
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  key={config.id}
+                >
+                  <AttendanceGraphs groupingId={config.id} />
+                  <InfoBoxes groupingId={config.id} />
+                </Col>
+              )}
+              {classes.isClassDay() ? <DivisionConfigsTeachers divisionConfigs={classes.getDivisionConfigs()} date={this.now} /> : null}
+              <Col xs={12} sm={12} md={6} lg={6}>
+                <Toolbar>
+                  <ToolbarGroup key={0} style={{ float: 'left' }}>
+                    <ToolbarTitle text="Notes" />
+                  </ToolbarGroup>
+                  <ToolbarGroup key={1} style={{ float: 'right' }}>
+                    <RaisedButton
+                      label="Add Note"
+                      secondary
+                      onClick={this.handleNewNote}
+                    />
+                  </ToolbarGroup>
+                </Toolbar>
+                <DisplayNotes />
               </Col>
-            )}
-            {classes.isClassDay() ? <DivisionConfigsTeachers divisionConfigs={classes.getDivisionConfigs()} date={this.now} /> : null}
-            <Col xs={12} sm={12} md={6} lg={6}>
-              <Toolbar>
-                <ToolbarGroup key={0} style={{ float: 'left' }}>
-                  <ToolbarTitle text="Notes" />
-                </ToolbarGroup>
-                <ToolbarGroup key={1} style={{ float: 'right' }}>
-                  <RaisedButton
-                    label="Add Note"
-                    secondary
-                    onClick={this.handleNewNote}
-                  />
-                </ToolbarGroup>
-              </Toolbar>
-              <DisplayNotes />
-            </Col>
-            
-          </Masonry>
-        </Grid>
-      </Row>
-    );
+              
+            </Masonry>
+          </Grid>
+        </Row>
+      );
+    } else {
+      retVal = (
+        <Row>
+          <Grid fluid>
+            <Row>
+              <Col md={12}>
+                <UnknownUserProfile />
+              </Col>
+            </Row>
+          </Grid>
+        </Row>
+      );
+    }
+
+    return retVal;
   }
 }
 

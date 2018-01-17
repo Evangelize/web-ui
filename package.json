@@ -12,7 +12,7 @@
     "build-dlls": "webpack --colors --display-error-details --config webpack/vendor.config.js",
     "build-dev": "rimraf ./static/dist && webpack -p --progress --stats --config ./webpack/dev.config.js",
     "watch-client": "node ./node_modules/webpack/bin/webpack.js --verbose --colors --display-error-details --config webpack.client-watch.js && node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.client-watch.js",
-    "dev": "NODE_ENV=development npm run start",
+    "dev": "node --harmony devserver.js",
     "prod": "NODE_ENV=production npm run --production start",
     "debug": "node --nolazy --debug-brk=5858 --harmony index.js",
     "deploy": "rimraf ./static/dist && NODE_ENV=production webpack -p --progress --stats --config ./webpack/prod.config.js",
@@ -82,6 +82,7 @@
     "react-anything-sortable": "^1.5.0",
     "react-avatar-editor": "^10.3.0",
     "react-bootstrap": "^0.30.3",
+    "react-calendar-timeline": "^0.15.4",
     "react-chartist": "^0.10.2",
     "react-cookie": "^0.4.7",
     "react-debounce-input": "^3.0.0",
@@ -172,18 +173,5 @@
   },
   "engines": {
     "node": ">=6.0.0"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0",
-      "react"
-    ],
-    "plugins": [
-      "transform-decorators-legacy",
-      "add-module-exports"
-    ],
-    "sourceMaps": true,
-    "retainLines": true
   }
 }

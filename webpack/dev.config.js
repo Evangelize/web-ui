@@ -45,6 +45,7 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 const webpackConfig = module.exports = {
   devtool: 'inline-source-map',
   context: path.resolve(__dirname, '..'),
+  target: 'web',
   entry: {
     main: [
       'react-hot-loader/patch',
@@ -66,7 +67,10 @@ const webpackConfig = module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'happypack/loader?id=jsx',
-        include: [path.resolve(__dirname, '../src')],
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+        ],
       }, {
         test: /\.json$/,
         loader: 'happypack/loader?id=json',
@@ -78,7 +82,10 @@ const webpackConfig = module.exports = {
       }, {
         test: /\.scss$/,
         loader: 'happypack/loader?id=sass',
-        include: [path.resolve(__dirname, '../src')],
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+        ],
       }, {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
@@ -172,6 +179,23 @@ const webpackConfig = module.exports = {
         options: babelLoaderQuery,
       },
     ]),
+    helpers.createHappyPlugin('css', [
+      {
+        loader: 'css-loader',
+        options: {
+          modules: true,
+          importLoaders: 2,
+          sourceMap: true,
+          localIdentName: '[local]___[hash:base64:5]',
+        },
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          sourceMap: true,
+        },
+      },
+    ]),
     helpers.createHappyPlugin('less', [
       {
         loader: 'style-loader',
@@ -206,7 +230,6 @@ const webpackConfig = module.exports = {
         options: {
           modules: true,
           importLoaders: 2,
-          sourceMap: true,
           localIdentName: '[local]___[hash:base64:5]',
         },
       }, {

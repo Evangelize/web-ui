@@ -6,6 +6,7 @@ import AddGroupMember from './views/members/AddGroupMember';
 import AddMember from './views/members/AddMember';
 import AttendanceTypes from './views/worship/AttendanceTypes';
 import AcademicYearDivisions from './views/classes/AcademicYearDivisions';
+import AcademicYearTimeline from './views/classes/AcademicYearTimeline';
 import AddClassDayTeacher from './views/classes/AddClassDayTeacher';
 import AddClassStudents from './views/classes/AddClassStudents';
 import AssignJobs from './views/worship/AssignJobs';
@@ -57,36 +58,43 @@ export default (auth) => {
         onEnter={redirect}
       />
       <Route
+        exact
         path="dashboard"
         component={Dashboard}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="classes"
         component={Classes}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="classes/:classId"
         component={Class}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="classes/:classId/:yearId/students"
         component={AddClassStudents}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="members/search"
         component={Members}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="members/import"
         component={ImportMembers}
         onEnter={requireAuth}
       />
       <Route
+        exact
         path="members/person/:id"
         component={Member}
         onEnter={requireAuth}
@@ -95,128 +103,159 @@ export default (auth) => {
         path="members/add/person"
         component={AddMember}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/add/family"
         component={Family}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/families"
         component={Families}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/family/:id"
         component={Family}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/family/:id/add"
         component={AddFamilyMember}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/groups"
         component={Groups}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="members/group/:id/add"
         component={AddGroupMember}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedules"
         component={Schedules}
         onEnter={requireAuth}
+        exact
+      />
+      <Route
+        path="schedules/timeline"
+        component={AcademicYearTimeline}
+        onEnter={requireAuth}
+        exact
       />
       <Route
         path="attendance"
         component={Attendance}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="attendance/:divisionConfig/:date"
         component={EditDayAttendance}
+        exact
       />
       <Route
         path="schedule/:divisionConfigId/:yearId/:classId/:day"
         component={AddClassDayTeacher}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/manage"
         component={ClassGroupings}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/:classGroupingId"
         component={ClassGroupingAcademicYears}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/academicYear/:yearId"
         component={AcademicYearDivisions}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/academicYear/:yearId/meetingDays"
         component={MeetingDaysSelect}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/academicYearDivision/:divisionId"
         component={DivisionClasses}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="schedule/academicYearDivision/:divisionId/select"
         component={DivisionClassesSelect}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/services/list"
         component={WorshipServices}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/services/:id/jobs"
         component={WorshipJobsSelect}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/jobs/list"
         component={Jobs}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/jobs/:id/members"
         component={JobMembers}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/assign"
         component={AssignJobs}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/attendance"
         exact
         component={WorshipAttendance}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/attendance/:date/:id"
         exact
         component={EditWorshipAttendance}
         onEnter={requireAuth}
+        exact
       />
       <Route
         path="worship/attendanceTypes/manage"
         exact
         component={AttendanceTypes}
         onEnter={requireAuth}
+        exact
       />
       
     </Route>
