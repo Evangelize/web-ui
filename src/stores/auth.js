@@ -145,7 +145,7 @@ export default class Auth {
     // this.setupRequest();
     const { jwt, user } = await this.checkUser();
     this.user.db = user;
-    this.db.setEntityId(this.user.db.user.entityId || null);
+    this.db.setEntityId(this.user.db.person.entityId || null);
     const tokn = jwtDecode(jwt);
     Cookie.set(accessToken, jwt, { expires: moment(tokn.exp, 'X').toDate() });
     try {
