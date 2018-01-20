@@ -259,6 +259,7 @@ module.exports = {
       },
     ]),
     new LodashModuleReplacementPlugin({
+      collections: true,
       currying: true,
       paths: true,
       shorthands: true,
