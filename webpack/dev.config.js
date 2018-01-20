@@ -18,6 +18,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const babelrc = fs.readFileSync('./.babelrc');
+const packageDeps = require('../package.json');
 let babelrcObject = {};
 
 try {
@@ -71,46 +72,68 @@ const webpackConfig = module.exports = {
           path.resolve(__dirname, '../src'),
           path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
         ],
-      }, {
+      },
+      {
         test: /\.json$/,
         loader: 'happypack/loader?id=json',
-        include: [path.resolve(__dirname, '../src')],
-      }, {
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
+        test: /\.css$/,
+        loader: 'happypack/loader?id=css',
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
         test: /\.less$/,
         loader: 'happypack/loader?id=less',
-        include: [path.resolve(__dirname, '../src')],
-      }, {
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
         test: /\.scss$/,
         loader: 'happypack/loader?id=sass',
         include: [
           path.resolve(__dirname, '../src'),
-          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+          path.resolve(__dirname, '../node_modules'),
         ],
-      }, {
+      },
+      {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'application/font-woff',
         },
-      }, {
+      },
+      {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'application/octet-stream',
         },
-      }, {
+      },
+      {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
-      }, {
+      },
+      {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'image/svg+xml',
         },
-      }, {
+      },
+      {
         test: webpackIsomorphicToolsPlugin.regular_expression('images'),
         loader: 'url-loader',
         options: {
@@ -127,8 +150,9 @@ const webpackConfig = module.exports = {
     extensions: ['.json', '.js', '.jsx'],
   },
   plugins: [
+    new webpack.HashedModuleIdsPlugin(),
     new webpack.LoaderOptionsPlugin({
-      test: /\.(less|scss)/,
+      test: /\.(less|scss|css)/,
       options: {
         postcss: function (webpack) {
           return [
@@ -169,7 +193,11 @@ const webpackConfig = module.exports = {
     new ReactLoadablePlugin({
       filename: path.join(assetsPath, 'loadable-chunks.json'),
     }),
-
+    helpers.createHappyPlugin('json', [
+      {
+        loader: 'json-loader',
+      },
+    ]),
     helpers.createHappyPlugin('jsx', [
       {
         loader: 'react-hot-loader/webpack',
@@ -245,6 +273,24 @@ const webpackConfig = module.exports = {
         },
       },
     ]),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'node-static',
+      filename: 'node-static.js',
+      minChunks(module, count) {
+        const context = module.context;
+        return context && context.indexOf('node_modules') >= 0;
+      },
+    }),
+    //catch all - anything used in more than one place
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'used-twice',
+      minChunks(module, count) {
+        return count >= 2;
+      },
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+    }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new OfflinePlugin({

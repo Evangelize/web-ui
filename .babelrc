@@ -17,10 +17,12 @@
   ],
   "sourceMaps": true,
   "retainLines": true,
+  "comments": true,
   "plugins": [
     "fast-async",
     "transform-decorators-legacy",
     "transform-react-jsx",
+    "lodash",
     "react-loadable/babel"
   ],
   "env": {

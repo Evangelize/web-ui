@@ -3,6 +3,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const precss = require('precss');
 const autoprefixer = require('autoprefixer');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -33,84 +34,18 @@ const babelrcObjectDevelopment = babelrcObject.env && babelrcObject.env.developm
 let combinedPlugins = babelrcObject.plugins || [];
 combinedPlugins = combinedPlugins.concat(babelrcObjectDevelopment.plugins);
 
-let babelLoaderQuery = Object.assign({}, babelrcObject, babelrcObjectDevelopment, { plugins: combinedPlugins });
+let babelLoaderQuery = Object.assign(
+  {},
+  babelrcObject,
+  babelrcObjectDevelopment,
+  { plugins: combinedPlugins },
+);
 delete babelLoaderQuery.env;
 
 module.exports = {
   devtool: 'source-map',
   context: path.resolve(__dirname, '..'),
   entry: {
-    vendor: [
-      'babel-polyfill',
-
-      //
-      // Generate this list using the following command against the stdout of
-      // webpack running against the source bundle config (dev/prod.js):
-      //
-      //    webpack --config webpack/dev.config.js --display-modules | egrep -o 'babel-runtime/\S+' | sed 's/\.js$//' | sort | uniq
-
-      // <babel-runtime>
-      'babel-runtime/core-js/array/from',
-      'babel-runtime/core-js/array/from.js',
-      'babel-runtime/core-js/get-iterator',
-      'babel-runtime/core-js/get-iterator.js',
-      'babel-runtime/core-js/is-iterable',
-      'babel-runtime/core-js/is-iterable.js',
-      'babel-runtime/core-js/object/assign',
-      'babel-runtime/core-js/object/assign.js',
-      'babel-runtime/core-js/object/create',
-      'babel-runtime/core-js/object/create.js',
-      'babel-runtime/core-js/object/define-properties',
-      'babel-runtime/core-js/object/define-properties.js',
-      'babel-runtime/core-js/object/define-property',
-      'babel-runtime/core-js/object/define-property.js',
-      'babel-runtime/core-js/object/entries',
-      'babel-runtime/core-js/object/entries.js',
-      'babel-runtime/core-js/object/get-prototype-of',
-      'babel-runtime/core-js/object/get-prototype-of.js',
-      'babel-runtime/core-js/object/keys',
-      'babel-runtime/core-js/object/keys.js',
-      'babel-runtime/core-js/object/set-prototype-of',
-      'babel-runtime/core-js/object/set-prototype-of.js',
-      'babel-runtime/core-js/object/values',
-      'babel-runtime/core-js/object/values.js',
-      'babel-runtime/core-js/symbol',
-      'babel-runtime/core-js/symbol/iterator',
-      'babel-runtime/core-js/symbol/iterator.js',
-      'babel-runtime/core-js/symbol.js',
-      'babel-runtime/helpers/classCallCheck',
-      'babel-runtime/helpers/classCallCheck.js',
-      'babel-runtime/helpers/createClass',
-      'babel-runtime/helpers/createClass.js',
-      'babel-runtime/helpers/defineProperty',
-      'babel-runtime/helpers/defineProperty.js',
-      'babel-runtime/helpers/extends',
-      'babel-runtime/helpers/extends.js',
-      'babel-runtime/helpers/inherits',
-      'babel-runtime/helpers/inherits.js',
-      'babel-runtime/helpers/objectWithoutProperties',
-      'babel-runtime/helpers/objectWithoutProperties.js',
-      'babel-runtime/helpers/possibleConstructorReturn',
-      'babel-runtime/helpers/possibleConstructorReturn.js',
-      'babel-runtime/helpers/slicedToArray',
-      'babel-runtime/helpers/slicedToArray.js',
-      'babel-runtime/helpers/toArray',
-      'babel-runtime/helpers/toArray.js',
-      'babel-runtime/helpers/toConsumableArray',
-      'babel-runtime/helpers/toConsumableArray.js',
-      'babel-runtime/helpers/typeof',
-      'babel-runtime/helpers/typeof.js',
-      // </babel-runtime>
-
-      'axios',
-      'react',
-      'material-ui',
-      'react-dom',
-      'react-hot-loader',
-      'mobx-react',
-      'react-router',
-      'mobx',
-    ],
     app: [
       'babel-polyfill',
       './src/index',
@@ -127,50 +62,73 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'happypack/loader?id=jsx',
+        exclude: /(react-pure-render)/,
         include: [
           path.resolve(__dirname, '../src'),
-          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+          path.resolve(__dirname, '../node_modules'),
         ],
-      }, {
+      },
+      {
         test: /\.json$/,
         loader: 'happypack/loader?id=json',
-        include: [path.resolve(__dirname, '../src')],
-      }, {
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
+        test: /\.css$/,
+        loader: 'happypack/loader?id=css',
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
         test: /\.less$/,
         loader: 'happypack/loader?id=less',
-        include: [path.resolve(__dirname, '../src')],
-      }, {
+        include: [
+          path.resolve(__dirname, '../src'),
+          path.resolve(__dirname, '../node_modules'),
+        ],
+      },
+      {
         test: /\.scss$/,
         loader: 'happypack/loader?id=sass',
         include: [
           path.resolve(__dirname, '../src'),
-          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+          path.resolve(__dirname, '../node_modules'),
         ],
-      }, {
+      },
+      {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'application/font-woff',
         },
-      }, {
+      },
+      {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'application/octet-stream',
         },
-      }, {
+      },
+      {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
-      }, {
+      },
+      {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: {
           limit: 10240,
           mimetype: 'image/svg+xml',
         },
-      }, {
+      },
+      {
         test: webpackIsomorphicToolsPlugin.regular_expression('images'),
         loader: 'url-loader',
         options: {
@@ -184,7 +142,7 @@ module.exports = {
       'src',
       'node_modules',
     ],
-    extensions: ['.json', '.js', '.jsx']
+    extensions: ['.json', '.js', '.jsx'],
   },
   plugins: [
     new CopyWebpackPlugin([
@@ -204,7 +162,7 @@ module.exports = {
       'typeof window': JSON.stringify('object'),
     }),
     new webpack.LoaderOptionsPlugin({
-      test: /\.(less|scss)/,
+      test: /\.(less|scss|css)/,
       options: {
         postcss: function (webpack) {
           return [
@@ -223,15 +181,18 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({ hash: false, template: './index.hbs' }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /nb/),
-    helpers.createHappyPlugin('jsx', [
+    helpers.createHappyPlugin('json', [
       {
-        loader: 'react-hot-loader/webpack',
-      }, 
+        loader: 'json-loader',
+      },
+    ]),
+    helpers.createHappyPlugin('jsx', [
       {
         loader: 'babel-loader',
         options: babelLoaderQuery,
       },
     ]),
+    new LodashModuleReplacementPlugin,
     helpers.createHappyPlugin('less', [
       {
         loader: 'style-loader',
@@ -253,6 +214,23 @@ module.exports = {
         loader: 'less-loader',
         options: {
           outputStyle: 'expanded',
+          sourceMap: true,
+        },
+      },
+    ]),
+    helpers.createHappyPlugin('css', [
+      {
+        loader: 'css-loader',
+        options: {
+          modules: true,
+          importLoaders: 2,
+          sourceMap: true,
+          localIdentName: '[local]___[hash:base64:5]',
+        },
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
           sourceMap: true,
         },
       },
@@ -282,8 +260,22 @@ module.exports = {
       },
     ]),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
+      name: 'node-static',
+      filename: 'node-static.js',
+      minChunks(module, count) {
+        const context = module.context;
+        return context && context.indexOf('node_modules') >= 0;
+      },
+    }),
+    //catch all - anything used in more than one place
+    new webpack.optimize.CommonsChunkPlugin({
+      async: 'used-twice',
+      minChunks(module, count) {
+        return count >= 2;
+      },
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
     }),
     new UglifyJSPlugin({
       sourceMap: true,
