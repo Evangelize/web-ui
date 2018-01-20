@@ -10,6 +10,7 @@ const assetsPath = path.resolve(__dirname, '../static/dist');
 const host = 'localhost';
 const port = 3002;
 const ReactLoadablePlugin = require('react-loadable/webpack').ReactLoadablePlugin;
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
@@ -68,9 +69,10 @@ const webpackConfig = module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'happypack/loader?id=jsx',
+        exclude: /(react-pure-render)/,
         include: [
           path.resolve(__dirname, '../src'),
-          path.resolve(__dirname, '../node_modules/react-calendar-timeline'),
+          path.resolve(__dirname, '../node_modules'),
         ],
       },
       {
@@ -200,9 +202,6 @@ const webpackConfig = module.exports = {
     ]),
     helpers.createHappyPlugin('jsx', [
       {
-        loader: 'react-hot-loader/webpack',
-      }, 
-      {
         loader: 'babel-loader',
         options: babelLoaderQuery,
       },
@@ -273,6 +272,11 @@ const webpackConfig = module.exports = {
         },
       },
     ]),
+    new LodashModuleReplacementPlugin({
+      currying: true,
+      paths: true,
+      shorthands: true,
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
       filename: 'node-static.js',

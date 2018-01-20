@@ -519,55 +519,49 @@ export default class Classes {
   getAllCurrentYears(now) {
     const self = this;
     now = now || moment(moment.tz('America/Chicago').format('YYYY-MM-DD')).valueOf();
-    return computed(() => {
-      const record = self.db.store.filter(
-        'divisionYears', [
-          filter((rec) => rec.deletedAt === null &&
-            rec.endDate >= now &&
-            rec.startDate <= now
-          ),
-          sortBy('end'),
-        ]
-      );
-      return record;
-    }).get();
+    const record = self.db.store.filter(
+      'divisionYears', [
+        filter((rec) => rec.deletedAt === null &&
+          rec.endDate >= now &&
+          rec.startDate <= now
+        ),
+        sortBy('end'),
+      ]
+    );
+    return record;
   }
 
   getCurrentDivision(divisionConfigId, now) {
     const self = this;
     now = now || moment(moment.tz('America/Chicago').format('YYYY-MM-DD')).valueOf();
-    return computed(() => {
-      const record = self.db.store.filter(
-        'divisions', [
-          filter((rec) => rec.deletedAt === null &&
-            rec.end >= now &&
-            rec.start <= now &&
-            rec.divisionConfigId === divisionConfigId
-          ),
-          sortBy('end'),
-          first,
-        ]
-      );
-      console.log('getCurrentDivision', divisionConfigId, record);
-      return record;
-    }).get();
+    const record = self.db.store.filter(
+      'divisions', [
+        filter((rec) => rec.deletedAt === null &&
+          rec.end >= now &&
+          rec.start <= now &&
+          rec.divisionConfigId === divisionConfigId
+        ),
+        sortBy('end'),
+        first,
+      ]
+    );
+    console.log('getCurrentDivision', divisionConfigId, record);
+    return record;
   }
 
   getAllCurrentDivisions(now) {
     const self = this;
     now = now || moment(moment.tz('America/Chicago').format('YYYY-MM-DD')).valueOf();
-    return computed(() => {
-      const record = self.db.store.filter(
-        'divisions', [
-          filter((rec) => rec.deletedAt === null &&
-            rec.end >= now &&
-            rec.start <= now
-          ),
-          sortBy('end'),
-        ]
-      );
-      return record;
-    }).get();
+    const record = self.db.store.filter(
+      'divisions', [
+        filter((rec) => rec.deletedAt === null &&
+          rec.end >= now &&
+          rec.start <= now
+        ),
+        sortBy('end'),
+      ]
+    );
+    return record;
   }
 
   getClassCurrentDivision(classId, now) {
@@ -575,19 +569,17 @@ export default class Classes {
     now = now || moment(moment.tz('America/Chicago').format('YYYY-MM-DD')).valueOf();
     const allCurrentDivs = this.getAllCurrentDivisions(now);
     const ids = (allCurrentDivs.length) ? allCurrentDivs.map(obj => obj.id) : [];
-    return computed(() => {
-      const record = self.db.store.filter(
-        'divisionClasses', [
-          filter((rec) => rec.deletedAt === null &&
-            ids.indexOf(rec.divisionId) > -1 &&
-            rec.classId === classId
-          ),
-          sortBy('end'),
-          first,
-        ]
-      );
-      return record;
-    }).get();
+    const record = self.db.store.filter(
+      'divisionClasses', [
+        filter((rec) => rec.deletedAt === null &&
+          ids.indexOf(rec.divisionId) > -1 &&
+          rec.classId === classId
+        ),
+        sortBy('end'),
+        first,
+      ]
+    );
+    return record;
   }
 
   getMeetingDay(day) {
@@ -686,37 +678,35 @@ export default class Classes {
 
   getDivisionClass(divisionClassId) {
     const self = this;
-    return computed(() => {
-      const divisionClass = self.db.store.filter(
-        'divisionClasses', [
-          filter((rec) => rec.deletedAt === null && rec.id === divisionClassId),
-          first,
-        ]
-      );
-      const division = self.db.store.filter(
-        'divisions', [
-          filter((rec) => rec.deletedAt === null && rec.id === divisionClass.divisionId),
-          first,
-        ]
-      );
-      const cls = self.db.store.filter(
-        'classes', [
-          filter((rec) => rec.deletedAt === null && rec.id === divisionClass.classId),
-          first,
-        ]
-      );
-      return observable(Object.assign({},
-        divisionClass, {
-          order: cls.order,
-          class: cls,
-          classId: cls.id,
-          divisionId: division.id,
-          id: divisionClass.id,
-          divisionClass,
-          division,
-        }
-      ));
-    }).get();
+    const divisionClass = self.db.store.filter(
+      'divisionClasses', [
+        filter((rec) => rec.deletedAt === null && rec.id === divisionClassId),
+        first,
+      ]
+    );
+    const division = self.db.store.filter(
+      'divisions', [
+        filter((rec) => rec.deletedAt === null && rec.id === divisionClass.divisionId),
+        first,
+      ]
+    );
+    const cls = self.db.store.filter(
+      'classes', [
+        filter((rec) => rec.deletedAt === null && rec.id === divisionClass.classId),
+        first,
+      ]
+    );
+    return observable(Object.assign({},
+      divisionClass, {
+        order: cls.order,
+        class: cls,
+        classId: cls.id,
+        divisionId: division.id,
+        id: divisionClass.id,
+        divisionClass,
+        division,
+      }
+    ));
   }
 
   getDivisionClassByDivisionAndClass(divisionId, classId) {
@@ -825,71 +815,65 @@ export default class Classes {
   getDivisionClassTeachersByDayRaw(divisionClassId, day) {
     const self = this;
     console.log('getDivisionClassTeachersByDayRaw:', divisionClassId, day);
-    return computed(() => {
-      return self.db.store.filter(
-        'divisionClassTeachers', [
-          filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-        ]
-      );
-    }).get();
+    return self.db.store.filter(
+      'divisionClassTeachers', [
+        filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
+      ]
+    );
   }
 
   getDivisionClassTeachersByDay(divisionClassId, day) {
     const self = this;
     console.log('getDivisionClassTeachersByDay:', divisionClassId, day);
-    return computed(() => {
-      const divisionClassTeachers = self.db.store.filter(
-        'divisionClassTeachers', [
-          filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-          sortBy('classId'),
-        ]
-      );
-      const people = self.db.store.filter(
-        'people', []
-      );
-      return self.db.eqJoin(
-        people,
-        divisionClassTeachers,
-        'id',
-        'peopleId',
-        (left, right) => ({
-          id: right.id,
-          person: left,
-          divClassTeacher: right,
-        })
-      ).then(
-        (data) => observable(data)
-      );
-    }).get();
+    const divisionClassTeachers = self.db.store.filter(
+      'divisionClassTeachers', [
+        filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
+        sortBy('classId'),
+      ]
+    );
+    const people = self.db.store.filter(
+      'people', []
+    );
+    return self.db.eqJoin(
+      people,
+      divisionClassTeachers,
+      'id',
+      'peopleId',
+      (left, right) => ({
+        id: right.id,
+        person: left,
+        divClassTeacher: right,
+      })
+    ).then(
+      (data) => observable(data)
+    );
   }
 
   getDivisionClassTeachersByDay2(divisionClassId, day) {
     const self = this;
     console.log('getDivisionClassTeachersByDay:', divisionClassId, day);
-    return computed(() => {
-      const divisionClassTeachers = self.db.store.filter(
-        'divisionClassTeachers', [
-          filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-          sortBy('classId'),
-        ]
-      );
-      const people = self.db.store.filter(
-        'people', []
-      );
-      return self.db.eqJoin(
-        people,
-        divisionClassTeachers,
-        'id',
-        'peopleId',
-        (left, right) => ({
-          id: right.id,
-          person: left,
-          divClassTeacher: right,
-        })
-      ).then(
-        (data) => observable(data)
-      );
-    }).get();
+    const divisionClassTeachers = self.db.store.filter(
+      'divisionClassTeachers', [
+        filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
+        sortBy('classId'),
+      ]
+    );
+    const people = self.db.store.filter(
+      'people', []
+    );
+    return self.db.eqJoin(
+      people,
+      divisionClassTeachers,
+      'id',
+      'peopleId',
+      (left, right) => ({
+        id: right.id,
+        person: left,
+        divClassTeacher: right,
+      })
+    ).then(
+      (data) => observable(data)
+    );
   }
 
   getDivisionClassTeachersGroupDay(divisionClassId) {

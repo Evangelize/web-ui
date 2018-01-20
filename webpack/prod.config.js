@@ -192,7 +192,6 @@ module.exports = {
         options: babelLoaderQuery,
       },
     ]),
-    new LodashModuleReplacementPlugin,
     helpers.createHappyPlugin('less', [
       {
         loader: 'style-loader',
@@ -259,6 +258,11 @@ module.exports = {
         },
       },
     ]),
+    new LodashModuleReplacementPlugin({
+      currying: true,
+      paths: true,
+      shorthands: true,
+    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
       filename: 'node-static.js',
