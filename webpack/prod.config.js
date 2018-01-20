@@ -263,6 +263,7 @@ module.exports = {
       currying: true,
       paths: true,
       shorthands: true,
+      exotics: true,
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
