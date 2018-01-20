@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import ListWorshipServices from '../../components/ListWorshipServices';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -16,6 +15,7 @@ import NavToolBar from '../../components/NavToolBar';
 import DialogWorshipService from '../../components/DialogWorshipService';
 import DialogConfirmDelete from '../../components/DialogConfirmDelete';
 
+
 const styles = {
   headline: {
     fontSize: 24,
@@ -28,7 +28,7 @@ const styles = {
   },
 };
 
-@inject('worship')
+@inject('worship', 'routing')
 @observer
 class WorshipServices extends Component {
   ts = moment();
@@ -69,7 +69,7 @@ class WorshipServices extends Component {
   }
 
   handleClose = (type) => {
-    const { worship, params } = this.props;
+    const { worship } = this.props;
     this.dialogOpen = false;
     this.edit = false;
     if (type === 'ok') {
@@ -86,15 +86,12 @@ class WorshipServices extends Component {
     this.deleteId = null;
   }
 
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   toggleSortable = () => {
     this.sortable = !this.sortable;
   }
 
   tapItem = (type, item) => {
+    const { routing } = this.props;
     if (type === 'edit') {
       this.service = item;
       this.edit = true;
@@ -102,7 +99,7 @@ class WorshipServices extends Component {
     } else if (type === 'delete') {
       this.dialogDeleteOpen = true;
     } else if (type === 'jobs') {
-      this.navigate(`/worship/services/${item.id}/jobs`);
+      routing.push(`/worship/services/${item.id}/jobs`);
     }
   }
 

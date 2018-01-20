@@ -3,7 +3,6 @@ import moment from 'moment-timezone';
 import momentFquarter from 'moment-fquarter';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Masonry from 'react-masonry-component';
 import Card from 'material-ui/Card/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -20,6 +19,7 @@ import Toggle from 'material-ui/Toggle';
 import { Grid, Row, Col } from 'react-bootstrap';
 import NavToolBar from '../../components/NavToolBar';
 import MaskedInput from '../../components/MaskedInput';
+
 
 const style = {
   marginLeft: 20,
@@ -41,7 +41,7 @@ const toggleStyle = Object.assign(
   },
 );
 
-@inject('people')
+@inject('people', 'routing')
 @observer
 class AddMember extends Component {
   @observable member = {
@@ -61,19 +61,15 @@ class AddMember extends Component {
     photoUrl: null,
   };
 
-
-  componentWillMount() {
-    const { people, params } = this.props;
-  }
-
   navigate(path, e) {
-    browserHistory.push(path);
+    const { routing } = this.props
+    routing.push(path);
   }
 
   handleSave = () => {
     const { people } = this.props;
     const person = people.addPerson(this.member);
-    this.navigate(`/members/person/${person.id}`);
+    this.navigate(`/people/members/person/${person.id}`);
   }
 
   handleChange = (field, e) => {
@@ -97,7 +93,7 @@ class AddMember extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Add Member" goBackTo="/members/search" />
+            <NavToolBar navLabel="Add Member" goBackTo="/people/members" />
           </Col>
         </Row>
         <Row>
@@ -198,7 +194,7 @@ class AddMember extends Component {
               <CardActions>
                 <RaisedButton
                   label="Cancel"
-                  onClick={((...args) => this.navigate('/members/search', ...args))}
+                  onClick={((...args) => this.navigate('/people/members/search', ...args))}
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton

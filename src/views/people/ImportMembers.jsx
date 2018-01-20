@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import {
   Card,
   CardActions,
@@ -83,7 +82,7 @@ const Field = observer((props) => (
   </div>
 ));
 
-@inject('classes', 'utils', 'messages')
+@inject('classes', 'utils', 'messages', 'routing')
 @observer
 class ImportMembers extends Component {
   @observable success = false;
@@ -230,7 +229,8 @@ class ImportMembers extends Component {
   }
 
   navigate = (path, e) => {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleNext = () => {
@@ -288,7 +288,7 @@ class ImportMembers extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Import Members" goBackTo="/members/search" />
+            <NavToolBar navLabel="Import Members" goBackTo="/people/members" />
           </Col>
         </Row>
         <Row>

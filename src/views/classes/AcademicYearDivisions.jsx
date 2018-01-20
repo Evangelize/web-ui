@@ -70,8 +70,8 @@ class AcadmicYearDivisions extends Component {
   }
 
   handleClose = (type) => {
-    const { classes, params } = this.props;
-    const { yearId } = params;
+    const { classes, match } = this.props;
+    const { yearId } = match.params;
     const ay = classes.getClassGroupingYear(yearId);
     this.dialogOpen = false;
     if (type === 'ok') {
@@ -102,8 +102,8 @@ class AcadmicYearDivisions extends Component {
   }
 
   render() {
-    const { classes, params } = this.props;
-    const { yearId } = params;
+    const { classes, match } = this.props;
+    const { yearId } = match.params;
     return (
       <div>
         <Grid fluid>
@@ -111,7 +111,7 @@ class AcadmicYearDivisions extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar
                 navLabel={`AY ${moment(classes.getClassGroupingYear(yearId).endDate).format('YYYY')} Divisions`}
-                goBackTo={`/schedule/${classes.getClassGroupingYear(yearId).divisionConfigId}`}
+                goBackTo={`/classes/schedule/manage/${classes.getClassGroupingYear(yearId).divisionConfigId}`}
               >
                 <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
                   <div style={{ display: 'flex', alignItems: 'center' }}>

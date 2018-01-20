@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
-import ReactGridLayout from 'react-grid-layout';
 import Card from 'material-ui/Card/Card';
 import CardActions from 'material-ui/Card/CardActions';
 import CardHeader from 'material-ui/Card/CardHeader';

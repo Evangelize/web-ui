@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -19,7 +18,7 @@ import RenderFamilies from '../../components/RenderFamilies';
 import DialogConfirmDelete from '../../components/DialogConfirmDelete';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class Families extends Component {
   @observable people = [];
@@ -63,14 +62,15 @@ class Families extends Component {
 
   handleNavMenu = (e, value, index) => {
     if (index === 0) {
-      this.navigate('/members/add/family');
+      this.navigate('/people/families/family/add');
     } else if (index === 1) {
-      this.navigate('/members/import');
+      this.navigate('/people/import');
     }
   }
 
   navigate = (path, e) => {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleClick = (event) => {
@@ -103,7 +103,7 @@ class Families extends Component {
 
   tapItem = (type, item) => {
     if (type === 'edit') {
-      this.navigate(`/members/family/${item.id}`);
+      this.navigate(`/people/families/family/${item.id}`);
     } else if (type === 'delete') {
       this.deleteId = item.id;
       this.dialogDeleteOpen = true;

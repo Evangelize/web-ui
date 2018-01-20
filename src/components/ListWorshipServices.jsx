@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { whilst } from 'async';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import { List, ListItem } from 'material-ui/List';
 import NavgiationApps from 'material-ui/svg-icons/navigation/apps';
@@ -14,10 +13,6 @@ import MenuItem from 'material-ui/MenuItem';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import WorshipService from './WorshipService';
 
-
-const navigate = function (path, e) {
-  browserHistory.push(path);
-};
 const iconButtonElement = (
   <IconButton
     touch

@@ -3,8 +3,6 @@ import update from 'react/lib/update';
 import moment from 'moment-timezone';
 import { whilst } from 'async';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
-import ReactGridLayout from 'react-grid-layout';
 import Card from 'material-ui/Card/Card';
 import CardActions from 'material-ui/Card/CardActions';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -26,10 +24,6 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import Class from './Class';
 
-
-const navigate = function (path, e) {
-  browserHistory.push(path);
-};
 const iconButtonElement = (
   <IconButton
     touch

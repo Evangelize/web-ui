@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
-import { observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
+import { inject, observer } from 'mobx-react';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
@@ -20,11 +19,12 @@ const iconButtonElement = (
   </IconButton>
 );
 
-
+@inject('routing')
 @observer
 class AcademicYear extends Component {
   navigate(path, e) {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleMenuTap = (e) => {
@@ -39,7 +39,7 @@ class AcademicYear extends Component {
     } else if (obj.props.children === 'Delete') {
       onTap('delete', item.id);
     } else if (obj.props.children === 'Meeting Days') {
-      this.navigate(`/schedule/academicYear/${item.id}/meetingDays`);
+      this.navigate(`/classes/schedule/manage/academicYear/${item.id}/meetingDays`);
     }
   }
 
@@ -50,7 +50,7 @@ class AcademicYear extends Component {
       <div>
         <Divider />
         <ListItem
-          onClick={((...args) => this.navigate(`/schedule/academicYear/${item.id}`, ...args))}
+          onClick={((...args) => this.navigate(`/classes/schedule/manage/academicYear/${item.id}`, ...args))}
           primaryText={moment(item.endDate).format('YYYY')}
           rightIconButton={
             <IconMenu

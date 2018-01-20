@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -23,7 +22,8 @@ import NavToolBar from '../../components/NavToolBar';
 import DialogWorshipAttendance from '../../components/DialogWorshipAttendance';
 import DatePicker from 'material-ui/DatePicker';
 
-@inject('worship')
+
+@inject('worship', 'routing')
 @observer
 export default class extends Component {
   @observable sortable = false;
@@ -63,10 +63,11 @@ export default class extends Component {
   }
 
   handleClose = (type) => {
+    const { routing } = this.props;
     this.dialogOpen = false;
     if (type === 'ok') {
       const path = `/worship/attendance/${this.worshipDate.valueOf()}/${this.service}`;
-      this.navigate(path);
+      routing.push(path);
     }
   }
 
@@ -75,8 +76,9 @@ export default class extends Component {
   }
 
   handleEditAttendance = (day, index, e) => {
+    const { routing } = this.props;
     const path = `/worship/attendance/${day.date.split('|')[0]}/${day.date.split('|')[1]}`;
-    this.navigate(path);
+    routing.push(path);
   }
 
   changeDate = (type, ...args) => {
@@ -91,11 +93,8 @@ export default class extends Component {
   }
 
   clickManageTypes = () => {
-    this.navigate('/worship/attendanceTypes/manage');
-  }
-
-  navigate = (path, e) => {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push('/worship/attendance/types');
   }
 
   render() {

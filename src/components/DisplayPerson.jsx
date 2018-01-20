@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
-import { browserHistory } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -28,10 +27,6 @@ class DisplayPerson extends Component {
   componentWillMount() {
     const { person, classes } = this.props;
     this.family = classes.getFamily(person.familyId);
-  }
-
-  navigate = (path, e) => {
-    browserHistory.push(path);
   }
 
   displayPhoto = () => {

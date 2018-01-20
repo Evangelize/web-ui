@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable, extendObservable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import Subheader from 'material-ui/Subheader/Subheader';
 import { List, ListItem } from 'material-ui/List';
@@ -54,16 +53,16 @@ const iconButtonElement = (
   </IconButton>
 );
 
-@inject('jobs', 'people')
+@inject('jobs', 'people', 'routing')
 @observer
-class JobMembers extends Component {
+export default class JobMembers extends Component {
   @observable job;
   @observable people = [];
   @observable searchType = 'lastName';
 
   componentWillMount() {
-    const { jobs, params } = this.props;
-    this.job = jobs.getJob(params.id);
+    const { jobs, match } = this.props;
+    this.job = jobs.getJob(match.params.id);
   }
 
   handleChange = (type, e, value) => {
@@ -92,7 +91,7 @@ class JobMembers extends Component {
   }
 
   handleClose = (type) => {
-    const { jobs, params } = this.props;
+    const { jobs, match } = this.props;
     this.dialogOpen = false;
     this.edit = false;
     if (type === 'ok') {
@@ -109,10 +108,6 @@ class JobMembers extends Component {
     this.deleteId = null;
   }
 
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   handleInputChange = (e) => {
     const { people } = this.props;
     const filter = e.target.value;
@@ -126,7 +121,7 @@ class JobMembers extends Component {
   }
 
   menuItemTap = (type, person) => {
-    const { jobs, params } = this.props;
+    const { jobs, match } = this.props;
 
     switch (type) {
     case 'confirm':
@@ -176,7 +171,7 @@ class JobMembers extends Component {
 
 
   render() {
-    const { jobs, params } = this.props;
+    const { jobs, match } = this.props;
     return (
       <div>
         <Grid fluid>
@@ -245,7 +240,7 @@ class JobMembers extends Component {
                 <Divider />
                 <CardMedia>
                   <RenderPeople
-                    people={jobs.getJobMembers(params.id)}
+                    people={jobs.getJobMembers(match.params.id)}
                     badge={this.renderBadge}
                     onTap={this.menuItemTap}
                     rightMenuItems={[
@@ -263,5 +258,3 @@ class JobMembers extends Component {
     );
   }
 }
-
-export default JobMembers;

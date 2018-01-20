@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import moment from 'moment-timezone';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -23,10 +22,6 @@ const iconButtonElement = (
 
 @observer
 class Job extends Component {
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   handleMenuTap = (e) => {
     e.preventDefault();
   }

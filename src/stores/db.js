@@ -107,6 +107,7 @@ export default class Db {
       }
     } else if (data.type === 'initialize') {
       this.store.initialize(data.collection);
+      this.events.emit('app', 'databaseInit:complete');
     } else {
       retValue = false;
     }

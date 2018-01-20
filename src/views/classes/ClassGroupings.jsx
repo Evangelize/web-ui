@@ -51,7 +51,7 @@ class ClassGroupings extends Component {
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel="Class Groupings" goBackTo="/schedules">
+              <NavToolBar navLabel="Class Groupings" goBackTo="/classes/schedules">
                 <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Toggle

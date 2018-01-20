@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
-import ReactGridLayout from 'react-grid-layout';
 import Card from 'material-ui/Card/Card';
 import CardActions from 'material-ui/Card/CardActions';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -19,7 +17,7 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 
 
-@inject("classes")
+@inject('classes')
 @observer
 class DisplayNotes extends Component {
 
@@ -48,13 +46,13 @@ class DisplayNotes extends Component {
   }
 
   componentWillReact() {
-    console.log("displayNotes:componentWillReact", moment().unix());
+    console.log('displayNotes:componentWillReact', moment().unix());
   }
   
   handleNoteDelete(note, e) {
     e.stopPropagation();
     const { classes } = this.props;
-    classes.deleteRecord("notes", note.id);
+    classes.deleteRecord('notes', note.id);
   }
   
   handleCardClick(note, e) {
@@ -126,7 +124,7 @@ class DisplayNotes extends Component {
               primary={true}
               onClick={::this.handleDialogClose} />
           ];
-    console.log("displayNotes:render", moment().unix());
+    console.log('displayNotes:render', moment().unix());
     return (
       <div>
         <Masonry>
@@ -135,13 +133,13 @@ class DisplayNotes extends Component {
               <Card>
                 <CardTitle title={note.title} style={(note.title) ? null : {display: 'none'}} />
                 <CardMedia onClick={((...args)=>this.handleCardClick(note, ...args))}>
-                <div style={{padding: "10px 25px"}} dangerouslySetInnerHTML={{__html: note.text}} />
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
+                <div style={{padding: '10px 25px'}} dangerouslySetInnerHTML={{__html: note.text}} />
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
                     <IconButton
                     iconClassName="material-icons"
                     tooltipPosition="top-center"
                     tooltip="Delete"
-                    iconStyle={{color: "grey"}}
+                    iconStyle={{color: 'grey'}}
                     onClick={((...args)=>this.handleNoteDelete(note, ...args))}>
                         delete
                     </IconButton>
@@ -154,7 +152,7 @@ class DisplayNotes extends Component {
       <Dialog
           title={
             <TextField
-              style={{margin: "25px"}}
+              style={{margin: '25px'}}
               ref="title"
               hintText="Title"
               onChange={::this.handleTitleChange}

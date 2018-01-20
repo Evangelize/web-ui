@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable, extendObservable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import ListJobs from '../../components/ListJobs';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -28,7 +27,7 @@ const styles = {
   },
 };
 
-@inject('jobs')
+@inject('jobs', 'routing')
 @observer
 class Jobs extends Component {
   ts = moment();
@@ -75,7 +74,7 @@ class Jobs extends Component {
   }
 
   handleClose = (type) => {
-    const { jobs, params } = this.props;
+    const { jobs } = this.props;
     this.dialogOpen = false;
     this.edit = false;
     if (type === 'ok') {
@@ -92,15 +91,13 @@ class Jobs extends Component {
     this.deleteId = null;
   }
 
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   toggleSortable = () => {
     this.sortable = !this.sortable;
   }
 
   tapItem = (type, item) => {
+    const { routing } = this.props;
+    
     if (type === 'edit') {
       this.job = item;
       this.edit = true;
@@ -108,7 +105,7 @@ class Jobs extends Component {
     } else if (type === 'delete') {
       this.dialogDeleteOpen = true;
     } else if (type === 'associate') {
-      this.navigate(`/worship/jobs/${item.id}/members`);
+      routing.push(`/worship/jobs/${item.id}/members`);
     }
   }
 

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observer, inject } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
@@ -23,9 +22,6 @@ const iconButtonElement = (
 @inject('classes')
 @observer
 class DivisionClass extends Component {
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
 
   handleMenuTap = (e) => {
     e.preventDefault();

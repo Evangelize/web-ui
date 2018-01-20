@@ -8,7 +8,7 @@ import DisplayWorshipAttendance from '../../components/DisplayWorshipAttendance'
 @observer
 export default class extends Component {
   render() {
-    const { worship, params } = this.props;
+    const { worship, match } = this.props;
     return (
       <div>
         <Grid fluid>
@@ -20,8 +20,8 @@ export default class extends Component {
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
               <DisplayWorshipAttendance
-                worshipDate={parseInt(params.date, 10)}
-                service={worship.getService(params.id)}
+                worshipDate={parseInt(match.params.date, 10)}
+                service={worship.getService(match.params.id)}
               />
             </Col>
           </Row>

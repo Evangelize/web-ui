@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { browserHistory } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -23,10 +22,6 @@ const iconButtonElement = (
 @inject('classes')
 @observer
 class DisplayFamily extends Component {
-  navigate = (path, e) => {
-    browserHistory.push(path);
-  }
-
   displayPhoto = () => {
     const { family } = this.props;
     const photoUrl = (this.family && this.family.photoUrl && this.family.photoUrl.length);

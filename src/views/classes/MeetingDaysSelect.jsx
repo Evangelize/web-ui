@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import moment from 'moment-timezone';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -17,24 +16,24 @@ import NavToolBar from '../../components/NavToolBar';
 
 @inject('classes')
 @observer
-class MeetingDaysSelect extends Component {
+export default class MeetingDaysSelect extends Component {
   @observable year;
 
   componentWillMount() {
-    const { classes, params } = this.props;
-    const { yearId } = params;
+    const { classes, match } = this.props;
+    const { yearId } = match.params;
     this.year = classes.getClassGroupingYear(yearId);
   }
 
   handleSelect = (day, event, isInputChecked) => {
-    const { classes, params } = this.props;
-    const { yearId } = params;
+    const { classes, match } = this.props;
+    const { yearId } = match.params;
     classes.updateAcademicYearMeetingDay(yearId, day, isInputChecked);
   }
 
   render() {
-    const { classes, params } = this.props;
-    const { yearId } = params;
+    const { classes, match } = this.props;
+    const { yearId } = match.params;
     const meetingDays = classes.getAcademicYearMeetingDays(yearId).map(obj => obj.dow);
     return (
       <div>
@@ -43,7 +42,7 @@ class MeetingDaysSelect extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar
                 navLabel={`AY ${moment(this.year.endDate).format('YYYY')} - Class Meeting Days`}
-                goBackTo={`/schedule/${this.year.divisionConfigId}`}
+                goBackTo={`/classes/schedule/manage/${this.year.divisionConfigId}`}
               />
             </Col>
           </Row>
@@ -81,5 +80,3 @@ class MeetingDaysSelect extends Component {
     );
   }
 }
-
-export default MeetingDaysSelect;

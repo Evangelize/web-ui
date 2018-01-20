@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -23,6 +22,7 @@ import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-mo
 import { Grid, Row, Col } from 'react-bootstrap';
 import NavToolBar from '../../components/NavToolBar';
 import DisplayDivisionClasses from '../../components/DisplayDivisionClasses';
+
 
 const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   const byteCharacters = atob(b64Data);
@@ -45,7 +45,7 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
   return blob;
 }
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class Schedules extends Component {
   @observable openMenu = false;
@@ -118,7 +118,8 @@ class Schedules extends Component {
   }
 
   goToManageSchedule = (e) => {
-    browserHistory.push('/schedule/manage');
+    const { routing } = this.props;
+    routing.push('/classes/schedule/manage');
   }
 
   handleOpenMenu = (event) => {
@@ -159,8 +160,9 @@ class Schedules extends Component {
   }
 
   manageScheduleClick = (event, menuItem, index) => {
+    const { routing } = this.props;
     if (menuItem.props.value === 'timeline') {
-      browserHistory.push('/schedules/timeline');
+      routing.push('/classes/schedules/timeline');
     }
   }
 

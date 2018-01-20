@@ -1,14 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
-import ReactGridLayout from 'react-grid-layout';
 import Paper from 'material-ui/Paper';
 import * as Colors from 'material-ui/styles/colors';
 import Transitions from 'material-ui/styles/transitions';
 import { Sparklines, SparklinesBars } from 'react-sparklines';
 
-@inject("classes")
+@inject('classes')
 @observer
 class DashboardComponentSmall extends Component {
 
@@ -22,19 +20,19 @@ class DashboardComponentSmall extends Component {
   }
 
   componentWillReact() {
-    console.log("dashboardComponentSmall:componentWillReact", moment().unix());
+    console.log('dashboardComponentSmall:componentWillReact', moment().unix());
   }
 
   render() {
-    console.log("dashboardComponentSmall:render", moment().unix());
+    console.log('dashboardComponentSmall:render', moment().unix());
     let attendanceStyle = {
           backgroundColor: Colors.cyan500,
-          width: "50%",
+          width: '50%',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          height: "100%",
+          height: '100%',
           fontSize: '35px',
           fontWeight: '500',
           color: '#fff'
@@ -44,9 +42,9 @@ class DashboardComponentSmall extends Component {
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          height: "100%",
-          padding: "0 0.5em",
-          width: "50%",
+          height: '100%',
+          padding: '0 0.5em',
+          width: '50%',
           fontSize: '14px',
           color: '#fff'
         };

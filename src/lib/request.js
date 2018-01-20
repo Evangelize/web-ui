@@ -19,7 +19,7 @@ export default (authToken) => {
     } catch (err) {
       console.log(err, ignoreError);
       results = err;
-      if (!ignoreError) window.location = '/login';
+      if (!ignoreError && err.response === 401) window.location = '/login';
     }
     return results;
   };

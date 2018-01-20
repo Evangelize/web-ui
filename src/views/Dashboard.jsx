@@ -84,7 +84,7 @@ const InfoBoxes = inject('classes')(observer(({ classes, groupingId }) =>
 
 @inject('classes', 'settings', 'auth')
 @observer
-class Dashboard extends Component {
+export default class Dashboard extends Component {
   @observable showDialog = false;
   @observable currentNote = {
     id: null,
@@ -186,5 +186,3 @@ class Dashboard extends Component {
     return retVal;
   }
 }
-
-export default Dashboard;

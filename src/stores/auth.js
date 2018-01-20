@@ -31,6 +31,7 @@ export default class Auth {
   api;
   @observable db;
   @observable authenticated = false;
+  @observable showSplash = true;
   @observable user = {
     db: null,
     firebase: null,
@@ -62,10 +63,9 @@ export default class Auth {
     this.user = user;
   }
 
-  setupAuth(authenticated) {
+  setupAuth(localAuth) {
     const self = this;
     const auth = firebaseAuth();
-    this.authenticated = (authenticated) ? authenticated : false;
     auth.onAuthStateChanged((user) => {
       if (user) {
         const currUser = currentUser();
@@ -85,7 +85,7 @@ export default class Auth {
         console.log('user logged out');
       }
     });
-    auth.getUid(authenticated.uid);
+    auth.getUid(localAuth.uid);
   }
 
   @action async checkUser() {
@@ -120,7 +120,6 @@ export default class Auth {
         self.userId = self.user.firebase.uid;
         const req = request(self.userId);
         this.api.init(req);
-        self.authenticated = true;
         await this.finalizeLogin();
       } catch (e) {
         error = e;
@@ -143,25 +142,38 @@ export default class Auth {
     await this.getAuthToken();
     // this.setupRefreshToken();
     // this.setupRequest();
-    const { jwt, user } = await this.checkUser();
-    this.user.db = user;
-    this.db.setEntityId(this.user.db.person.entityId || null);
-    const tokn = jwtDecode(jwt);
-    Cookie.set(accessToken, jwt, { expires: moment(tokn.exp, 'X').toDate() });
     try {
-      const data = await this.getAllTables();
-      const payload = {
-        payload: {
-          data: {
-            collection: data,
-            type: 'initialize',
+      const { jwt, user } = await this.checkUser();
+      this.user.db = user;
+      this.db.setEntityId(this.user.db.person.entityId || null);
+      const tokn = jwtDecode(jwt);
+      Cookie.set(accessToken, jwt, { expires: moment(tokn.exp, 'X').toDate() });
+      try {
+        const data = await this.getAllTables();
+        const payload = {
+          payload: {
+            data: {
+              collection: data,
+              type: 'initialize',
+            },
           },
-        },
-      };
-      this.events.emit('db', payload);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.log(error);
+        };
+        this.setShowSplash(false);
+        this.authenticated = true;
+        this.events.emit('db', payload);
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.setShowSplash(false);
+          console.log(error);
+        }
+      }
+    } catch (err) {
+      if (err.response && err.response && err.response.status === 401) {
+        console.log(err);
+        this.setShowSplash(false);
+      } else {
+        this.setShowSplash(false);
+        this.authenticated = true;
       }
     }
     // this.setupUserProfile()
@@ -200,23 +212,18 @@ export default class Auth {
     )
   }
 
-  authenticate(email, password, callback) {
-    const self = this;
-    this.api.auth.login(email, password)
-    .then(
-      (result) => {
-        const token = jwtDecode(result.jwt);
-        Cookie.set(accessToken, result.jwt, { expires: moment(tokn.exp, 'X').toDate() });
-        self.authenticated = true;
-        console.log('user', result.user);
-        self.user.db = result.user;
-        callback(self.authenticated);
-      },
-      (err) => {
-        console.log('unauthorized', err);
-        callback(self.authenticated);
-      }
-    );
+  async authenticate(email, password, callback) {
+    const result = this.api.auth.login(email, password);
+    if (result) {
+      const token = jwtDecode(result.jwt);
+      Cookie.set(accessToken, result.jwt, { expires: moment(token.exp, 'X').toDate() });
+      this.authenticated = true;
+      console.log('user', result.user);
+      this.user.db = result.user;
+    } else {
+      console.log('unauthorized');
+    }
+    return this.authenticated;
   }
 
   async getAllTables() {
@@ -226,6 +233,10 @@ export default class Auth {
   @computed get userFullName() {
     const name = (this.user && this.user.db && this.user.db.person) ? this.user.db.person.firstName + ' ' + this.user.db.person.lastName : 'User Name';
     return name;
+  }
+
+  @action setShowSplash(state) {
+    this.showSplash = state;
   }
 
 }

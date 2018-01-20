@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import ListClasses from '../../components/ListClasses';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -33,10 +32,6 @@ class Classes extends Component {
 
   formatDateRange(division) {
     return moment(division.start).format('MMM D YYYY') + ' - ' + moment(division.end).format('MMM D YYYY')
-  }
-
-  navigate(path, e) {
-    browserHistory.push(path);
   }
 
   goBack() {

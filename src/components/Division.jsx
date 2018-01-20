@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observer, inject } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import { ListItem } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import { grey400, darkBlack, lightBlack } from 'material-ui/styles/colors';
@@ -20,13 +19,9 @@ const iconButtonElement = (
   </IconButton>
 );
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class Division extends Component {
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   handleMenuTap = (e) => {
     e.preventDefault();
   }
@@ -41,13 +36,12 @@ class Division extends Component {
     }
   }
   render() {
-    const { item } = this.props;
-
+    const { item, routing } = this.props;
     return (
       <div>
         <Divider />
         <ListItem
-          onClick={((...args) => this.navigate(`/schedule/academicYearDivision/${item.id}`, ...args))}
+          onClick={((...args) => routing.push(`/classes/schedule/manage/academicYearDivision/${item.id}`))}
           primaryText={item.title}
           secondaryText={`${moment(item.start).format('MMM DD YYYY')} - ${moment(item.end).format('MMM DD YYYY')}`}
           rightIconButton={

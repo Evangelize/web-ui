@@ -41,8 +41,8 @@ class ClassGroupingAcadmicYears extends Component {
   }
 
   handleClose = (type) => {
-    const { classes, params } = this.props;
-    const { classGroupingId } = params;
+    const { classes, match } = this.props;
+    const { classGroupingId } = match.params;
     this.dialogOpen = false;
     if (type === 'ok') {
       classes.updateClassGroupingYear(this.yearId, classGroupingId, this.start.valueOf(), this.end.valueOf());
@@ -74,14 +74,14 @@ class ClassGroupingAcadmicYears extends Component {
   }
 
   render() {
-    const { classes, params } = this.props;
-    const { classGroupingId } = params;
+    const { classes, match } = this.props;
+    const { classGroupingId } = match.params;
     return (
       <div>
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel={`${classes.getDivisionConfig(classGroupingId).title}`} goBackTo="/schedule/manage">
+              <NavToolBar navLabel={`${classes.getDivisionConfig(classGroupingId).title}`} goBackTo="/classes/schedule/manage/">
                 <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
                   <RaisedButton
                     label="Add Academic Year"
@@ -101,7 +101,7 @@ class ClassGroupingAcadmicYears extends Component {
                   avatar={<Avatar>{"AY"}</Avatar>}
                 />
                 <CardMedia>
-                  <ListAcademicYears 
+                  <ListAcademicYears
                     classGroupingId={classGroupingId} 
                     onTap={this.handleTap}
                   />

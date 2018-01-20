@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -22,7 +21,7 @@ import NavToolBar from '../../components/NavToolBar';
 import DialogAttendance from '../../components/DialogAttendance';
 import DatePicker from 'material-ui/DatePicker';
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class Attendance extends Component {
   @observable sortable = false;
@@ -60,10 +59,11 @@ class Attendance extends Component {
   }
 
   handleClose = (type) => {
+    const { routing } = this.props;
     this.dialogOpen = false;
     if (type === 'ok') {
-      const path = `/attendance/${this.classGrouping.id}/${this.newStart.valueOf()}`;
-      this.navigate(path);
+      const path = `/classes/attendance/${this.classGrouping.id}/${this.newStart.valueOf()}`;
+      routing.push(path);
     }
   }
 
@@ -72,8 +72,9 @@ class Attendance extends Component {
   }
 
   handleEditAttendance = (day, index, e) => {
-    const path = `/attendance/${this.classGrouping.id}/${day.date}`;
-    this.navigate(path);
+    const { routing } = this.props;
+    const path = `/classes/attendance/${this.classGrouping.id}/${day.date}`;
+    routing.push(path);
   }
 
   changeDate = (type, ...args) => {
@@ -85,10 +86,6 @@ class Attendance extends Component {
     const { classes } = this.props;
     this.classGrouping = classes.getDivisionConfig(value);
     // console.log(menuItem);
-  }
-
-  navigate = (path, e) => {
-    browserHistory.push(path);
   }
 
   render() {
@@ -140,7 +137,7 @@ class Attendance extends Component {
             <Card>
               <CardHeader
                 title={this.classGrouping.title}
-                subtitle={"Daily Totals"}
+                subtitle={'Daily Totals'}
                 avatar={
                   <Avatar>
                     {this.classGrouping.title.charAt(0)}

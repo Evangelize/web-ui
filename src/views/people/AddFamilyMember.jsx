@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Card from 'material-ui/Card/Card';
@@ -53,9 +52,9 @@ export default class AddFamilyMember extends Component {
   }
 
   getFamily = () => {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     if (!this.family) {
-      this.family = people.getFamily(params.id);
+      this.family = people.getFamily(match.params.id);
     }
   }
 
@@ -69,7 +68,7 @@ export default class AddFamilyMember extends Component {
 
   menuItemTap = (person, item, event) => {
     let opts;
-    const { people, params } = this.props;
+    const { people, match } = this.props;
 
     switch (item) {
     case 'add':
@@ -84,7 +83,7 @@ export default class AddFamilyMember extends Component {
   }
 
   render() {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     const dropDownStyle = {
       marginTop: '15px',
     };
@@ -93,7 +92,7 @@ export default class AddFamilyMember extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Add Family Members" goBackTo={(this.family) ? `/members/family/${this.family.id}` : null} />
+            <NavToolBar navLabel="Add Family Members" goBackTo={(this.family) ? `/people/families/family/${this.family.id}` : null} />
           </Col>
         </Row>
         {(this.family) ?

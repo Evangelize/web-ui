@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import moment from 'moment-timezone';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -18,14 +17,14 @@ import ListClasses from '../../components/ListClasses';
 class DivisionClassesSelect extends Component {
   @observable divisionId;
   handleSelect = (id, event, isInputChecked) => {
-    const { classes, params } = this.props;
-    const { divisionId } = params;
+    const { classes, match } = this.props;
+    const { divisionId } = match.params;
     classes.updateDivisionClass(id, divisionId, isInputChecked);
   }
 
   render() {
-    const { classes, params } = this.props;
-    const { divisionId } = params;
+    const { classes, match } = this.props;
+    const { divisionId } = match.params;
     const div = classes.getDivision(divisionId);
     const year = classes.getClassGroupingYear(div.divisionYear);
     const divClasses = classes.getCurrentDivisionClasses(divisionId).map(obj => obj.classId);
@@ -36,7 +35,7 @@ class DivisionClassesSelect extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar
                 navLabel={`${div.title} AY ${moment(year.endDate).format('YYYY')}`}
-                goBackTo={`/schedule/academicYearDivision/${div.id}`}
+                goBackTo={`/classes/schedule/manage/academicYearDivision/${div.id}`}
               />
             </Col>
           </Row>

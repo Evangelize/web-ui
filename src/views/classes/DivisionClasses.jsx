@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import moment from 'moment-timezone';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -15,7 +14,7 @@ import ListDivisionClasses from '../../components/ListDivisionClasses';
 import DialogDivision from '../../components/DialogDivision';
 import DialogConfirmDelete from '../../components/DialogConfirmDelete';
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class DivisionClasses extends Component {
   @observable divisionId;
@@ -37,10 +36,10 @@ class DivisionClasses extends Component {
   }
 
   navigate = () => {
-    const { classes, params } = this.props;
-    const { divisionId } = params;
-    const path = `/schedule/academicYearDivision/${divisionId}/select`;
-    browserHistory.push(path);
+    const { classes, match, routing } = this.props;
+    const { divisionId } = match.params;
+    const path = `/classes/schedule/manage/academicYearDivision/${divisionId}/select`;
+    routing.push(path);
   }
 
   handleTap = (type, id) => {
@@ -69,8 +68,8 @@ class DivisionClasses extends Component {
   }
 
   render() {
-    const { classes, params } = this.props;
-    const { divisionId } = params;
+    const { classes, match } = this.props;
+    const { divisionId } = match.params;
     const div = classes.getDivision(divisionId);
     const year = classes.getClassGroupingYear(div.divisionYear);
     return (
@@ -80,7 +79,7 @@ class DivisionClasses extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar
                 navLabel={`${div.title} AY ${moment(year.endDate).format('YYYY')}`}
-                goBackTo={`/schedule/academicYear/${div.divisionYear}`}
+                goBackTo={`/classes/schedule/manage/academicYear/${div.divisionYear}`}
               >
                 <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
                   <RaisedButton

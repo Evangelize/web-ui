@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -19,7 +18,7 @@ import RenderPeople from '../../components/RenderPeople';
 import DialogConfirmDelete from '../../components/DialogConfirmDelete';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class Members extends Component {
   @observable people = [];
@@ -63,16 +62,17 @@ class Members extends Component {
 
   handleNavMenu = (e, value, index) => {
     if (index === 0) {
-      this.navigate('/members/add/person');
+      this.navigate('/people/members/add/person');
     } else if (index === 1) {
-      this.navigate('/members/add/family');
+      this.navigate('/people/families/family/add');
     } else if (index === 2) {
-      this.navigate('/members/import');
+      this.navigate('/people/import');
     }
   }
 
   navigate = (path, e) => {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleClick = (event) => {
@@ -105,7 +105,7 @@ class Members extends Component {
 
   tapItem = (type, item) => {
     if (type === 'edit') {
-      this.navigate(`/members/person/${item.id}`);
+      this.navigate(`/people/members/person/${item.id}`);
     } else if (type === 'delete') {
       this.deleteId = item.id;
       this.dialogDeleteOpen = true;
@@ -122,7 +122,7 @@ class Members extends Component {
       this.deleteId = person.id;
       this.dialogDeleteOpen = true;
     } else if (obj.props.children === 'Edit') {
-      this.navigate(`/members/person/${person.id}`);
+      this.navigate(`/people/members/person/${person.id}`);
     }
   }
 

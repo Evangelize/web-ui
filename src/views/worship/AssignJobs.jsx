@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import moment from 'moment-timezone';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -35,7 +34,7 @@ const iconButtonElement = (
 
 @inject('worship', 'jobs')
 @observer
-class AssignJobs extends Component {
+export default class AssignJobs extends Component {
   @observable month = moment().format('MM');
   @observable year = moment().format('YYYY');
   @observable members = [];
@@ -196,5 +195,3 @@ class AssignJobs extends Component {
     );
   }
 }
-
-export default AssignJobs;

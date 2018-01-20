@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
+import { withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import { List, ListItem } from 'material-ui/List';
@@ -13,9 +14,9 @@ import Drawer from 'material-ui/Drawer';
 import { Modal } from 'react-overlays';
 import MediaQuery from 'react-responsive';
 
-@inject('auth', 'classes', 'settings')
+@inject('auth', 'classes', 'settings', 'routing')
 @observer
-class App extends Component {
+export default class App extends Component {
   @observable muiTheme;
   @observable open = false;
   @observable name;
@@ -39,10 +40,10 @@ class App extends Component {
   }
 
   handleLeftNavChange(url, e) {
-    const { settings } = this.props;
+    const { settings, routing } = this.props;
     console.log('handleLeftNavChange');
     settings.leftNavOpen = false;
-    browserHistory.push(url);
+    routing.push(url);
   }
 
   showLeftNavClick = (e) => {
@@ -67,7 +68,7 @@ class App extends Component {
   }
 
   render() {
-    const { auth, settings } = this.props;
+    const { auth, settings, route } = this.props;
     const modalStyle = {
       position: 'fixed',
       zIndex: 1040,
@@ -151,7 +152,7 @@ class App extends Component {
                 nestedItems={[
                   <ListItem
                     key={1}
-                    onClick={((...args) => this.handleLeftNavChange('/attendance', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/classes/attendance', ...args))}
                     primaryText="Attendance"
                   />,
                   <ListItem
@@ -161,7 +162,7 @@ class App extends Component {
                   />,
                   <ListItem
                     key={4}
-                    onClick={((...args) => this.handleLeftNavChange('/schedules', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/classes/schedules', ...args))}
                     primaryText="Schedules"
                   />,
                 ]}
@@ -173,17 +174,17 @@ class App extends Component {
                 nestedItems={[
                   <ListItem
                     key={1}
-                    onClick={((...args) => this.handleLeftNavChange('/worship/services/list', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/worship/services', ...args))}
                     primaryText="Worship Services"
                   />,
                   <ListItem
                     key={2}
-                    onClick={((...args) => this.handleLeftNavChange('/worship/jobs/list', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/worship/jobs', ...args))}
                     primaryText="Jobs"
                   />,
                   <ListItem
                     key={3}
-                    onClick={((...args) => this.handleLeftNavChange('/worship/assign', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/worship/services/assign/jobs', ...args))}
                     primaryText="Assign Jobs"
                   />,
                   <ListItem
@@ -200,22 +201,22 @@ class App extends Component {
                 nestedItems={[
                   <ListItem
                     key={1}
-                    onClick={((...args) => this.handleLeftNavChange('/members/search', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/people/members', ...args))}
                     primaryText="Members"
                   />,
                   <ListItem
                     key={2}
-                    onClick={((...args) => this.handleLeftNavChange('/members/families', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/people/families', ...args))}
                     primaryText="Families"
                   />,
                   <ListItem
                     key={3}
-                    onClick={((...args) => this.handleLeftNavChange('/members/groups', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/people/groups', ...args))}
                     primaryText="Groups"
                   />,
                   <ListItem
                     key={4}
-                    onClick={((...args) => this.handleLeftNavChange('/members/import', ...args))}
+                    onClick={((...args) => this.handleLeftNavChange('/people/import', ...args))}
                     primaryText="Import"
                   />,
                 ]}
@@ -228,7 +229,7 @@ class App extends Component {
             </List>
           </Drawer>
         </div>
-        {this.props.children}
+        {renderRoutes(route.routes)}
       </div>
     );
   }
@@ -239,4 +240,3 @@ App.contextTypes = {
   store: React.PropTypes.object.isRequired
 };
 */
-export default App;

@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Card from 'material-ui/Card/Card';
@@ -51,16 +50,16 @@ const ListStudents = inject('classes')(observer(({ classes, students, actions })
 
 @inject('classes')
 @observer
-class AddClassStudents extends Component {
+export default class AddClassStudents extends Component {
   @observable class;
   @observable year;
   @observable searchType = 'lastName';
   @observable people = [];
 
   componentWillMount() {
-    const { classes, params } = this.props;
-    this.class = classes.getClass(params.classId);
-    this.year = classes.getClassGroupingYear(params.yearId);
+    const { classes, match } = this.props;
+    this.class = classes.getClass(match.params.classId);
+    this.year = classes.getClassGroupingYear(match.params.yearId);
   }
 
   handleInputChange = (e) => {
@@ -78,14 +77,14 @@ class AddClassStudents extends Component {
 
   menuItemTap = (person, item, event) => {
     let opts;
-    const { classes, params } = this.props;
+    const { classes, match } = this.props;
 
     switch (item) {
     case 'add':
-      classes.updateClassYearStudent(params.classId, params.yearId, person.id);
+      classes.updateClassYearStudent(match.params.classId, match.params.yearId, person.id);
       break;
     case 'delete':
-      let student = classes.getClassYearStudent(params.classId, params.yearId, person.id); 
+      let student = classes.getClassYearStudent(match.params.classId, match.params.yearId, person.id); 
       classes.deleteRecord('yearClassStudents', student.id);
       break;
     default:
@@ -94,7 +93,7 @@ class AddClassStudents extends Component {
   }
 
   render() {
-    const { classes, params } = this.props;
+    const { classes, match } = this.props;
     const dropDownStyle = {
       marginTop: '15px',
     };
@@ -102,7 +101,7 @@ class AddClassStudents extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Add Students" goBackTo={`/classes/${params.classId}`} />
+            <NavToolBar navLabel="Add Students" goBackTo={`/classes/class/${match.params.classId}`} />
           </Col>
         </Row>
         <Row>
@@ -112,14 +111,14 @@ class AddClassStudents extends Component {
               onChange={this.handleSelectValueChange}
               style={dropDownStyle}
             >
-              <MenuItem value={"lastName"} primaryText="Last Name" />
-              <MenuItem value={"firstName"} primaryText="First Name" />
-              <MenuItem value={"emailAddress"} primaryText="Email" />
+              <MenuItem value={'lastName'} primaryText="Last Name" />
+              <MenuItem value={'firstName'} primaryText="First Name" />
+              <MenuItem value={'emailAddress'} primaryText="Email" />
             </DropDownMenu>
           </Col>
           <Col xs={12} sm={9} md={8} lg={10}>
             <TextField
-              className={"searchBox"}
+              className={'searchBox'}
               ref="searchField"
               floatingLabelText="Search"
               defaultValue={classes.peopleFilter}
@@ -136,7 +135,7 @@ class AddClassStudents extends Component {
                 avatar={<Avatar>S</Avatar>}
               />
               <CardMedia>
-                <ListStudents actions={this.menuItemTap} students={classes.getClassYearStudents(params.classId, params.yearId)} />
+                <ListStudents actions={this.menuItemTap} students={classes.getClassYearStudents(match.params.classId, match.params.yearId)} />
                 <Divider />
                 <List>
                   <Subheader>Search Results</Subheader>
@@ -160,4 +159,3 @@ class AddClassStudents extends Component {
     );
   }
 }
-export default AddClassStudents;

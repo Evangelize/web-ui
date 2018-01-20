@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Card from 'material-ui/Card/Card';
@@ -34,7 +33,7 @@ const iconButtonElement = (
   </IconButton>
 );
 
-@inject('people')
+@inject('people', 'routing')
 @observer
 export default class AddGroupMember extends Component {
   @observable group;
@@ -46,13 +45,13 @@ export default class AddGroupMember extends Component {
   @observable filter = '';
 
   componentDidMount() {
-    const { people, params } = this.props;
-    this.group = people.getGroup(params.id);
+    const { people, match } = this.props;
+    this.group = people.getGroup(match.params.id);
   }
   componentWillReceiveProps() {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     if (!this.group) {
-      this.group = people.getGroup(params.id);
+      this.group = people.getGroup(match.params.id);
     }
   }
 
@@ -69,7 +68,7 @@ export default class AddGroupMember extends Component {
   }
 
   menuItemTap = (item, person, event) => {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
 
     switch (item) {
     case 'add':
@@ -119,7 +118,7 @@ export default class AddGroupMember extends Component {
   }
 
   render() {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     const dropDownStyle = {
       marginTop: '15px',
     };
@@ -127,7 +126,7 @@ export default class AddGroupMember extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Add Group Members" goBackTo="/members/groups" />
+            <NavToolBar navLabel="Add Group Members" goBackTo="/people/groups" />
           </Col>
         </Row>
         <Row>
@@ -183,7 +182,7 @@ export default class AddGroupMember extends Component {
                 }
                 <Subheader>Group Members</Subheader>
                 <RenderPeople
-                  people={people.getGroupMembers(params.id)}
+                  people={people.getGroupMembers(match.params.id)}
                   onTap={this.menuItemTap}
                   nameFormat={this.formatGroupMemberName}
                   leftAvatar={this.groupAvatar}

@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Card from 'material-ui/Card/Card';
@@ -66,11 +65,11 @@ class AddClassDayTeacher extends Component {
   @observable people = [];
 
   componentWillMount() {
-    const { classes, params } = this.props;
-    this.divClass = classes.getDivisionClass(params.classId);
+    const { classes, match } = this.props;
+    this.divClass = classes.getDivisionClass(match.params.classId);
     this.division = classes.getDivision(this.divClass.divisionClass.divisionId);
     this.divisionYear = classes.getClassGroupingYear(this.division.divisionYear);
-    this.day = classes.getCurrentDivisionMeetingDays(this.division.divisionYear, params.day);
+    this.day = classes.getCurrentDivisionMeetingDays(this.division.divisionYear, match.params.day);
   }
 
   handleInputChange = (e) => {
@@ -88,7 +87,7 @@ class AddClassDayTeacher extends Component {
 
   menuItemTap = (teacher, item, event) => {
     let opts;
-    const { classes, params } = this.props;
+    const { classes, match } = this.props;
 
     switch (item) {
     case 'confirm':
@@ -98,7 +97,7 @@ class AddClassDayTeacher extends Component {
       classes.confirmTeacher(false, this.divClass.divisionClass.id, teacher.divClassTeacher.id);
       break;
     case 'add':
-      classes.updateClassDayTeacher(this.divClass.divisionClass.id, parseInt(params.day, 10), teacher.id, this.day.id);
+      classes.updateClassDayTeacher(this.divClass.divisionClass.id, parseInt(match.params.day, 10), teacher.id, this.day.id);
       break;
     case 'delete':
       classes.deleteRecord('divisionClassTeachers', teacher.divClassTeacher.id);
@@ -109,7 +108,7 @@ class AddClassDayTeacher extends Component {
   }
 
   render() {
-    const { classes, params } = this.props;
+    const { classes, match } = this.props;
     const dropDownStyle = {
       marginTop: '15px',
     };
@@ -117,7 +116,7 @@ class AddClassDayTeacher extends Component {
       <Grid fluid>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
-            <NavToolBar navLabel="Assign Teachers" goBackTo="/schedules" />
+            <NavToolBar navLabel="Assign Teachers" goBackTo="/classes/schedules" />
           </Col>
         </Row>
         <Row>
@@ -147,11 +146,11 @@ class AddClassDayTeacher extends Component {
             <Card>
               <CardHeader
                 title={this.divClass.class.title}
-                subtitle={`${moment().weekday(params.day).format('dddd')} - ${this.division.title} AY ${moment(this.divisionYear.endDate).format('YYYY')}`}
-                avatar={<Avatar>{moment().weekday(params.day).format('dd')}</Avatar>}
+                subtitle={`${moment().weekday(match.params.day).format('dddd')} - ${this.division.title} AY ${moment(this.divisionYear.endDate).format('YYYY')}`}
+                avatar={<Avatar>{moment().weekday(match.params.day).format('dd')}</Avatar>}
               />
               <CardMedia>
-                <ListTeachers actions={this.menuItemTap} teachers={classes.getDivisionClassTeachersByDayRaw(params.classId, parseInt(params.day, 10))} />
+                <ListTeachers actions={this.menuItemTap} teachers={classes.getDivisionClassTeachersByDayRaw(match.params.classId, parseInt(match.params.day, 10))} />
                 <Divider />
                 <List>
                   <Subheader>Search Results</Subheader>

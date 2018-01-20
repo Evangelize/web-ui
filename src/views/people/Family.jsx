@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -61,7 +60,7 @@ const toggleStyle = Object.assign(
   },
 );
 
-@inject('people')
+@inject('people', 'routing')
 @observer
 class family extends Component {
   @observable family;
@@ -90,9 +89,9 @@ class family extends Component {
   @observable dialogDeleteOpen = false;
 
   componentWillMount() {
-    const { people, params } = this.props;
-    if (params.id) {
-      this.family = people.getFamily(params.id);
+    const { people, match } = this.props;
+    if (match.params.id) {
+      this.family = people.getFamily(match.params.id);
     } else {
       this.isNew = true;
       this.family = people.createFamily();
@@ -103,7 +102,8 @@ class family extends Component {
   }
 
   navigate(path, e) {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleSave = async () => {
@@ -238,7 +238,7 @@ class family extends Component {
 
   tapItem = (type, item) => {
     if (type === 'edit') {
-      this.navigate(`/members/person/${item.id}`);
+      this.navigate(`/people/members/person/${item.id}`);
     } else if (type === 'delete') {
       this.deleteItem = item;
       this.dialogDeleteOpen = true;
@@ -246,7 +246,7 @@ class family extends Component {
   }
 
   addPeople = () => {
-    this.navigate(`/members/family/${this.family.id}/add`);
+    this.navigate(`/people/families/family/${this.family.id}/add`);
   }
 
   handleDeleteClose = (type) => {
@@ -266,7 +266,7 @@ class family extends Component {
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel="Family" goBackTo="/members/families">
+              <NavToolBar navLabel="Family" goBackTo="/people/families">
                 {(this.family.name) ?
                   <ToolbarGroup key={1} lastChild style={{ float: 'right' }}>
                     <RaisedButton
@@ -578,7 +578,7 @@ class family extends Component {
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel="No family Selected" goBackTo="/members/families" />
+              <NavToolBar navLabel="No family Selected" goBackTo="/people/families" />
             </Col>
           </Row>
         </Grid>

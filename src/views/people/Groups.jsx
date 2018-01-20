@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -35,7 +34,7 @@ const iconButtonElement = (
   </IconButton>
 );
 
-@inject('people')
+@inject('people', 'routing')
 @observer
 class Groups extends Component {
   @observable people = [];
@@ -80,7 +79,7 @@ class Groups extends Component {
       this.group = group;
       this.dialogOpen = true;
     } else if (item.props.value === 'add') {
-      this.navigate(`/members/group/${group.id}/add`);
+      this.navigate(`/people/groups/group/${group.id}/add`);
     } else if (item.props.value === 'delete') {
       this.deleteId = group.id;
       this.dialogDeleteOpen = true;
@@ -88,7 +87,8 @@ class Groups extends Component {
   }
 
   navigate = (path, e) => {
-    browserHistory.push(path);
+    const { routing } = this.props;
+    routing.push(path);
   }
 
   handleDeleteClose = (type) => {

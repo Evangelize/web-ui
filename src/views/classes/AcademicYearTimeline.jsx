@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
@@ -128,7 +127,7 @@ export default class AcademicYearTimeline extends Component {
   }
 
   goToManageSchedule = (e) => {
-    browserHistory.push('/schedule/manage');
+    browserHistory.push('/classes/schedule/manage/');
   }
 
   handleOpenMenu = (event) => {

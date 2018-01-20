@@ -3,7 +3,6 @@ import moment from 'moment-timezone';
 import momentFquarter from 'moment-fquarter';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Masonry from 'react-masonry-component';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -25,7 +24,7 @@ import DisplayTeacher from '../../components/DisplayTeacher';
 
 @inject('classes')
 @observer
-class Class extends Component {
+export default class Class extends Component {
   @observable cls;
   @observable yearId;
   @observable divisionClass;
@@ -35,10 +34,9 @@ class Class extends Component {
   @observable currentTeachers;
   @observable masonryOptions = [];
   componentWillMount() {
-    const { params } = this.props;
-    const { classes } = this.props;
-    this.cls = classes.getClass(params.classId);
-    this.divisionClass = classes.getClassCurrentDivision(params.classId);
+    const { match, classes } = this.props;
+    this.cls = classes.getClass(match.params.classId);
+    this.divisionClass = classes.getClassCurrentDivision(match.params.classId);
     this.currentDivision = (this.divisionClass) ? classes.getDivision(this.divisionClass.divisionId) : null;
     this.yearId = (this.currentDivision) ? classes.getClassGroupingYear(this.currentDivision.divisionYear).id : null;
     this.currentTeachers = (this.currentDivision) ? classes.getClassTeachers(this.cls.id) : [];
@@ -48,9 +46,8 @@ class Class extends Component {
   }
 
   getGraphAttendance(day, length) {
-    const { params } = this.props;
-    const { classes } = this.props;
-    const attendance = classes.getClassAttendanceByDay(params.classId, day);
+    const { match, classes } = this.props;
+    const attendance = classes.getClassAttendanceByDay(match.params.classId, day);
     const labels = attendance.map((day1) => moment.utc(day1.attendanceDate).tz('America/Chicago').format('MM/DD'));
     const series = attendance.map((day1) => parseInt(day1.count, 10));
     //console.log("graphAttendance", labels, series);
@@ -60,18 +57,13 @@ class Class extends Component {
     };
   }
 
-  navigate(path, e) {
-    browserHistory.push(path);
-  }
-
   formatDateRange(division) {
     return moment(division.start).format('MMM D YYYY') + ' - ' + moment(division.end).format('MMM D YYYY');
   }
 
   updateTitle(e) {
-    const { classes } = this.props;
-    const { params } = this.props;
-    classes.db.updateCollectionFields('classes', params.classId, { title: e.target.value });
+    const { classes, match } = this.props;
+    classes.db.updateCollectionFields('classes', match.params.classId, { title: e.target.value });
   }
 
   selectedYear = (event, selectedIndex, value) => {
@@ -85,13 +77,13 @@ class Class extends Component {
   }
 
   addStudent = (e) => {
-    const { params } = this.props;
+    const { match, routing } = this.props;
 
-    browserHistory.push(`/classes/${params.classId}/${this.yearId}/students`);
+    routing.push(`/classes/class/${match.params.classId}/${this.yearId}/students`);
   }
 
   render() {
-    const { params } = this.props;
+    const { match } = this.props;
     const { classes } = this.props;
     let lineChartOptions = {
       low: 0,
@@ -271,5 +263,3 @@ class Class extends Component {
     return retVal;
   }
 }
-
-export default Class;

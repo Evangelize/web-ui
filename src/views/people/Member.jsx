@@ -3,7 +3,6 @@ import moment from 'moment-timezone';
 import momentFquarter from 'moment-fquarter';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import Masonry from 'react-masonry-component';
 import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
@@ -70,7 +69,7 @@ const toggleStyle = Object.assign(
   },
 );
 
-@inject('people')
+@inject('people', 'routing')
 @observer
 class Member extends Component {
   @observable member;
@@ -108,11 +107,11 @@ class Member extends Component {
   }
 
   getPerson = () => {
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     const self = this;
     if (!this.member) {
-      this.member = people.getPerson(params.id);
-      people.getPersonLogins(params.id).then(
+      this.member = people.getPerson(match.params.id);
+      people.getPersonLogins(match.params.id).then(
         (data) => {
           self.logins = data;
         }
@@ -128,10 +127,6 @@ class Member extends Component {
     } else if (this.member && this.family.photoUrl && !this.photo) {
       this.photo = this.family.photoUrl;
     }
-  }
-
-  navigate(path, e) {
-    browserHistory.push(path);
   }
 
   handleSave = async () => {
@@ -220,11 +215,11 @@ class Member extends Component {
   handleClose = async (type, e) => {
     const self = this;
     this.open = false;
-    const { people, params } = this.props;
+    const { people, match } = this.props;
     console.log(e);
     if (type === 'select') {
       await people.connectLogin(this.member.id, this.member.entityId, this.selectedLogin);
-      people.getPersonLogins(params.id).then(
+      people.getPersonLogins(match.params.id).then(
         (data) => {
           self.logins = data;
         }
@@ -236,8 +231,8 @@ class Member extends Component {
 
   updateTitle(e) {
     const { people } = this.props;
-    const { params } = this.props;
-    people.db.updateCollectionFields('people', params.classId, { title: e.target.value });
+    const { match } = this.props;
+    people.db.updateCollectionFields('people', match.params.classId, { title: e.target.value });
   }
 
   changeTab = (index) => {
@@ -309,7 +304,7 @@ class Member extends Component {
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
-              <NavToolBar navLabel="Member" goBackTo="/members/search">
+              <NavToolBar navLabel="Member" goBackTo="/people/members">
                 <ToolbarGroup lastChild style={{ float: 'right' }}>
                   {(this.slideIndex === 'logins') ?
                     <RaisedButton
@@ -446,7 +441,7 @@ class Member extends Component {
                             {this.logins.map(login =>
                               <ListItem
                                 key={login.id}
-                                primaryText={`${login.person.displayName} (${login.person.email})`}
+                                primaryText={(login.person) ? `${login.person.displayName} (${login.person.email})` : null}
                                 secondaryText={`${startCase(login.type)} ${String.fromCharCode(8226)} ${login.externalId}`}
                               />
                             )}

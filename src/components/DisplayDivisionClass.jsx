@@ -3,7 +3,6 @@ import { uniqueId } from 'lodash/fp';
 import moment from 'moment-timezone';
 import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import { browserHistory } from 'react-router';
 import * as Colors from 'material-ui/styles/colors';
 import ListItem from 'material-ui/List/ListItem';
 import Subheader from 'material-ui/Subheader/Subheader';
@@ -18,7 +17,7 @@ import { TableRow, TableRowColumn } from 'material-ui/Table';
 import Promise from 'bluebird';
 import Async from './Async';
 
-@inject('classes')
+@inject('classes', 'routing')
 @observer
 class DisplayDivisionClass extends Component {
   @observable division;
@@ -32,8 +31,9 @@ class DisplayDivisionClass extends Component {
   }
 
   handleEditDay(divClass, day, e) {
-    const path = `/schedule/${this.division.divisionConfigId}/${this.divisionYear.id}/${divClass.id}/${day.dow}`;
-    browserHistory.push(path);
+    const { routing } = this.props;
+    const path = `/classes/schedule/manage/${this.division.divisionConfigId}/${this.divisionYear.id}/${divClass.id}/${day.dow}`;
+    routing.push(path);
   }
 
   renderTeachersList(day) {
