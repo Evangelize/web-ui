@@ -267,6 +267,7 @@ module.exports = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
+      children: true,
       filename: 'node-static.js',
       minChunks(module, count) {
         const context = module.context;
@@ -276,6 +277,7 @@ module.exports = {
     //catch all - anything used in more than one place
     new webpack.optimize.CommonsChunkPlugin({
       async: 'used-twice',
+      children: true,
       minChunks(module, count) {
         return count >= 2;
       },
