@@ -11,3 +11,6 @@ config/config.json
 /style.js
 private.*
 .vscode/
+package-lock.json
+webpack-assets.json
+vendor/dlls/vendor.json
