@@ -99,7 +99,7 @@ class WorshipServices extends Component {
     } else if (type === 'delete') {
       this.dialogDeleteOpen = true;
     } else if (type === 'jobs') {
-      routing.push(`/worship/services/${item.id}/jobs`);
+      routing.push(`/worship/services/service/${item.id}/jobs`);
     }
   }
 

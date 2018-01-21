@@ -302,7 +302,7 @@ export default () => [
         component: requireAuthentication(WorshipServices),
       },
       {
-        path: '/worship/services/:id/jobs',
+        path: '/worship/services/service/:id/jobs',
         exact: true,
         component: requireAuthentication(WorshipJobsSelect),
       },

@@ -172,34 +172,14 @@ export default class JobMembers extends Component {
 
   render() {
     const { jobs, match } = this.props;
+    const selected = jobs.getJobMembers(match.params.id);
+    const available = this.people.filter(p => !selected.find(s => p.id === s.id));
     return (
       <div>
         <Grid fluid>
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar navLabel="Jobs" goBackTo="/dashboard" />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} sm={3} md={4} lg={2}>
-              <DropDownMenu
-                value={this.searchType}
-                onChange={this.handleSelectValueChange}
-                style={styles.dropDownStyle}
-              >
-                <MenuItem value={'lastName'} primaryText="Last Name" />
-                <MenuItem value={'firstName'} primaryText="First Name" />
-                <MenuItem value={'emailAddress'} primaryText="Email" />
-              </DropDownMenu>
-            </Col>
-            <Col xs={12} sm={9} md={8} lg={10}>
-              <TextField
-                className={'searchBox'}
-                ref="searchField"
-                floatingLabelText="Search"
-                defaultValue={jobs.peopleFilter}
-                onChange={this.handleInputChange}
-              />
             </Col>
           </Row>
           <Row>
@@ -210,13 +190,37 @@ export default class JobMembers extends Component {
                   subtitle="Assign members to duty pool"
                   avatar={<Avatar>{this.job.title.charAt(0)}</Avatar>}
                 />
+                <CardMedia>
+                  <Row>
+                    <Col xs={12} sm={3} md={4} lg={2}>
+                      <DropDownMenu
+                        value={this.searchType}
+                        onChange={this.handleSelectValueChange}
+                        style={styles.dropDownStyle}
+                      >
+                        <MenuItem value={'lastName'} primaryText="Last Name" />
+                        <MenuItem value={'firstName'} primaryText="First Name" />
+                        <MenuItem value={'emailAddress'} primaryText="Email" />
+                      </DropDownMenu>
+                    </Col>
+                    <Col xs={12} sm={9} md={8} lg={10}>
+                      <TextField
+                        className={'searchBox'}
+                        ref="searchField"
+                        floatingLabelText="Search"
+                        defaultValue={jobs.peopleFilter}
+                        onChange={this.handleInputChange}
+                      />
+                    </Col>
+                  </Row>
+                </CardMedia>
                 {this.people.length &&
                   <div>
                     <Divider />
                     <CardMedia>
                       <List>
                         <Subheader>Search Results</Subheader>
-                        {this.people.map((person, index) =>
+                        {available.map((person, index) =>
                           <div key={index}>
                             <ListItem
                               rightIconButton={
@@ -237,10 +241,10 @@ export default class JobMembers extends Component {
                     </CardMedia>
                   </div>
                 }
-                <Divider />
                 <CardMedia>
+                  <Subheader>Currently Selected</Subheader>
                   <RenderPeople
-                    people={jobs.getJobMembers(match.params.id)}
+                    people={selected}
                     badge={this.renderBadge}
                     onTap={this.menuItemTap}
                     rightMenuItems={[

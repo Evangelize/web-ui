@@ -122,7 +122,7 @@ export default class AssignJobs extends Component {
           {worship.getMonthServiceDays(this.month, this.year).map((date) =>
             <Row key={date}>
               {worship.getServicesByDate(date).map((service) =>
-                <Col xs={12} sm={12} md={12} lg={12}>
+                <Col key={service.id} xs={12} sm={12} md={12} lg={12}>
                   <Card>
                     <CardHeader
                       title={`${service.title}`}
