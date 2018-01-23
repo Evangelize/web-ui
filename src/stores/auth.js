@@ -26,6 +26,7 @@ const accessToken = 'accessToken';
 
 export default class Auth {
   client;
+  error;
   events;
   request;
   api;
@@ -39,7 +40,7 @@ export default class Auth {
   @observable userId;
   @observable authToken;
 
-  constructor(db, events, api) {
+  constructor(db, events, api, onError) {
     if (db) {
       this.setupDb(db);
     }
@@ -49,6 +50,9 @@ export default class Auth {
     if (api) {
       this.setupApi(api);
     }
+    if (onError) {
+      this.setupError(onError);
+    }
   }
 
   setupApi(api) {
@@ -57,6 +61,10 @@ export default class Auth {
 
   setupDb(db) {
     this.db = db;
+  }
+
+  setupError(onError) {
+    this.error = onError;
   }
 
   @action setUser(user) {
@@ -127,7 +135,7 @@ export default class Auth {
           providers = await fetchProvidersForEmail(error.email);
           console.log(providers);
         }
-        
+        this.error(e, null, null);
       }
     }
     console.log(error, results);
@@ -166,6 +174,7 @@ export default class Auth {
           this.setShowSplash(false);
           console.log(error);
         }
+        this.error(error, null, null);
       }
     } catch (err) {
       if (err.response && err.response && err.response.status === 401) {
@@ -175,6 +184,7 @@ export default class Auth {
         this.setShowSplash(false);
         this.authenticated = true;
       }
+      this.error(err, null, null);
     }
     // this.setupUserProfile()
     return this.user;
@@ -207,6 +217,7 @@ export default class Auth {
           window.location = '/login';
         }
         console.log('error', error);
+        this.error(error, null, null);
         throw error
       }
     )

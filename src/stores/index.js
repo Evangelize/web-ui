@@ -46,20 +46,20 @@ const modules = [
 
 export default class {
   @observable stores = {};
-  constructor(db, events, api) {
+  constructor(db, events, api, onError) {
     const self = this;
     if (events) {
-      this.init(db, events, api);
+      this.init(db, events, api, onError);
     }
   }
 
-  init = (db, events, api) => {
+  init = (db, events, api, onError) => {
     const self = this;
     return new Promise((resolve, reject) => {
       each(
         modules,
         (Mod, cb) => {
-          self.stores[Mod.name.toLowerCase()] = new Mod.klass(db, events, api);
+          self.stores[Mod.name.toLowerCase()] = new Mod.klass(db, events, api, onError);
           cb();
         },
         (err) => {

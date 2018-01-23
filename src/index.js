@@ -12,12 +12,45 @@ import EventEmitter from 'eventemitter3';
 // import moment from 'moment';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import reactCookie from 'react-cookie';
+import { JL } from 'jsnlog';
 import Root from './containers/Root';
 import Db from './stores/db';
 import Stores from './stores';
 import Sockets from './stores/sockets';
 import request from './lib/request';
 import Api from './api';
+import settings from '../config/webSettings';
+
+const beforeSend = (xhr) => {
+  xhr.setRequestHeader('authorization', 'Bearer');
+};
+const appender = JL.createAjaxAppender('authorization');
+appender.setOptions({
+  beforeSend,
+});
+JL.setOptions({
+  appenders: [appender],
+  defaultAjaxUrl: `${settings.serverUrl}api/logging/add`,
+});
+JL().info('testing');
+
+const onError = (error, errorInfo, props) => {
+  const errorMsg = error;
+  const url = null;
+  const lineNumber = null;
+  const column = null;
+  JL('onerrorLogger').fatalException(
+    {
+      msg: 'Uncaught Exception',
+      errorMsg,
+      url,
+      'line number': lineNumber,
+      column,
+    },
+    error,
+  );
+  return false;
+};
 
 const browserHistory = createBrowserHistory();
 const routingStore = new RouterStore();
@@ -59,7 +92,7 @@ const render = () => {
     stores.stores
   );
 
-  ReactDOM.render(<Root context={context} history={history} />, rootElement);
+  ReactDOM.render(<Root context={context} history={history} onError={onError} />, rootElement);
 };
 
 // Needed for onClick
@@ -71,7 +104,7 @@ const localAuth = localAuthentication();
 if (localAuth) {
   const req = request(localAuth.uid);
   const api = new Api(req, events);
-  stores.init(db, events, api).then(
+  stores.init(db, events, api, onError).then(
     (data) => {
       console.log(stores);
       stores.stores.auth.setupAuth(localAuth);
@@ -85,7 +118,7 @@ if (localAuth) {
   // console.log('db', db);
 } else {
   const api = new Api(null, events);
-  stores.init(db, events, api).then(
+  stores.init(db, events, api, onError).then(
     (data) => {
       console.log(stores);
       stores.stores.auth.setShowSplash(false);

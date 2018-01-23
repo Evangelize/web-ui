@@ -157,6 +157,7 @@ module.exports = {
       __DEVTOOLS__: false,
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
+        ERROR_ENV: '"development"',
         BROWSER: 1,
       },
       'typeof window': JSON.stringify('object'),
