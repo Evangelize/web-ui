@@ -1,7 +1,9 @@
 const isBrowser = typeof window !== 'undefined';
 const ReactSocialLoginButtons = isBrowser ? require('react-social-login-buttons') : undefined;
 const GoogleLoginButton = isBrowser ? ReactSocialLoginButtons.GoogleLoginButton : undefined;
+const FacebookLoginButton = isBrowser ? ReactSocialLoginButtons.FacebookLoginButton : undefined;
 import React, { Component } from 'react';
+import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import CustomColors from '../components/CustomColors';
@@ -11,6 +13,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 @inject('auth', 'settings', 'sockets', 'routing')
 @observer
 class Login extends Component {
+  @observable displayLoginFields = false;
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -30,6 +33,7 @@ class Login extends Component {
     this.error = null;
     const { auth, sockets, settings, routing } = this.props;
     const result = await auth.login(type);
+    console.log(result);
     if (result.error && result.error.code === 'auth/account-exists-with-different-credential') {
       link = await result.results.user.linkWithCredential(result.error.credential);
       this.providers = result.providers;
@@ -96,6 +100,8 @@ class Login extends Component {
 
   render() {
     const { auth } = this.props;
+    const priorAuth = sessionStorage.getItem('auth-issue');
+    const provider = (priorAuth) ? JSON.parse(priorAuth).provider : null;
     return (
       <div className="login-box">
         {!auth.showSplash ?
@@ -110,33 +116,59 @@ class Login extends Component {
               >
               </div>
               <div className="login-body">
-                {isBrowser ?
-                  <GoogleLoginButton
-                    onClick={((...args) => this.socialLogin('google', ...args))}
-                  /> : null
+                {priorAuth ?
+                  <h3>To complete signup using the prior credentials you must login with the provider below</h3> : null
                 }
-                <TextField
-                  hintText="Email"
-                  floatingLabelText="Email"
-                  type="email"
-                  errorText={this.state.error}
-                  style={{ width: '100%' }}
-                  value={this.state.email}
-                  onChange={((...args) => this.handleChange('email', ...args))}
-                />
-                <br />
-                <TextField
-                  type="password"
-                  hintText="Password"
-                  floatingLabelText="Password"
-                  errorText={this.state.error}
-                  style={{ width: '100%' }}
-                  value={this.state.password}
-                  onChange={((...args) => this.handleChange('password', ...args))}
-                />
-                <br />
-                <br />
-                <RaisedButton label="Login" primary onClick={((...args) => this.login(...args))} />
+                {isBrowser && !priorAuth ?
+                  <div>
+                    <GoogleLoginButton
+                      onClick={((...args) => this.socialLogin('google', ...args))}
+                    />
+                    <FacebookLoginButton
+                      onClick={((...args) => this.socialLogin('facebook', ...args))}
+                    />
+                  </div> : null
+                }
+                {isBrowser && priorAuth ?
+                  <div>
+                    {provider === 'google.com' ?
+                      <GoogleLoginButton
+                        onClick={((...args) => this.socialLogin('google', ...args))}
+                      /> : null
+                    }
+                    {provider === 'facebook.com' ?
+                      <FacebookLoginButton
+                        onClick={((...args) => this.socialLogin('facebook', ...args))}
+                      /> : null
+                    }
+                  </div> : null
+                }
+                {this.displayLoginFields ?
+                  <div>
+                    <TextField
+                      hintText="Email"
+                      floatingLabelText="Email"
+                      type="email"
+                      errorText={this.state.error}
+                      style={{ width: '100%' }}
+                      value={this.state.email}
+                      onChange={((...args) => this.handleChange('email', ...args))}
+                    />
+                    <br />
+                    <TextField
+                      type="password"
+                      hintText="Password"
+                      floatingLabelText="Password"
+                      errorText={this.state.error}
+                      style={{ width: '100%' }}
+                      value={this.state.password}
+                      onChange={((...args) => this.handleChange('password', ...args))}
+                    />
+                    <br />
+                    <br />
+                    <RaisedButton label="Login" primary onClick={((...args) => this.login(...args))} />
+                  </div> : null
+                }
               </div>
             </div>
           </div> :

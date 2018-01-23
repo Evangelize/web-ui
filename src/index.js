@@ -18,6 +18,7 @@ import Db from './stores/db';
 import Stores from './stores';
 import Sockets from './stores/sockets';
 import request from './lib/request';
+import { getRedirectResult, fetchProvidersForEmail, facebookProvider, firebaseAuth } from './lib/auth';
 import Api from './api';
 import settings from '../config/webSettings';
 
@@ -63,9 +64,45 @@ const history = syncHistoryWithStore(browserHistory, routingStore);
 let sockets;
 const rootElement = document.getElementById('root');
 const token = reactCookie.load('accessToken');
-const localAuthentication = () => {
-  const authUser = Object.keys(window.localStorage).filter(item => item.startsWith('firebase:authUser'))[0];
-  const user = authUser ? JSON.parse(localStorage.getItem(authUser)) : authUser;
+const localAuthentication = async () => {
+  let user;
+  try {
+    const redirectResult = await getRedirectResult();
+    if (redirectResult.credential) {
+      user = redirectResult.user;
+      const priorAuth = sessionStorage.getItem('auth-issue');
+      if (priorAuth) {
+        const cred = firebaseAuth.FacebookAuthProvider.credential(JSON.parse(priorAuth).credentials.accessToken);
+        await user.linkWithCredential(cred);
+        sessionStorage.removeItem('auth-issue');
+      }
+    } else {
+      const authUser = Object.keys(window.localStorage).filter(item => item.startsWith('firebase:authUser'))[0];
+      user = authUser ? JSON.parse(localStorage.getItem(authUser)) : authUser;
+    }
+  } catch (e) {
+    const code = (e.code) ? e.code : null;
+    const credentials = (e.credential) ? e.credential : null;
+    const errorMessage = (e.message) ? e.message : null;
+    const email = (e.email) ? e.email : null;
+    if (credentials) {
+      const providers = await fetchProvidersForEmail(email);
+      console.log(code, errorMessage, email, providers);
+      sessionStorage.setItem(
+        'auth-issue',
+        JSON.stringify(
+          {
+            code,
+            provider: providers[0],
+            credentials,
+          }
+        )
+      );
+    } else {
+      console.log(e);
+      throw e;
+    }
+  }
   return user;
 };
 
@@ -100,36 +137,40 @@ const render = () => {
 // Check this repo:
 // https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
-const localAuth = localAuthentication();
-if (localAuth) {
-  const req = request(localAuth.uid);
-  const api = new Api(req, events);
-  stores.init(db, events, api, onError).then(
-    (data) => {
-      console.log(stores);
-      stores.stores.auth.setupAuth(localAuth);
-      sockets = new Sockets();
-      sockets.init(events);
-      render();
-      // stores.stores.auth.authenticated = true;
-      // stores.stores.auth.user = JSON.parse(user);
+localAuthentication().then(
+  (localAuth) => {
+    if (localAuth) {
+      const req = request(localAuth.uid);
+      const api = new Api(req, events);
+      stores.init(db, events, api, onError).then(
+        (data) => {
+          console.log(stores);
+          stores.stores.auth.setupAuth(localAuth);
+          sockets = new Sockets();
+          sockets.init(events);
+          document.getElementById('loading').outerHTML = '';
+          render();
+          // stores.stores.auth.authenticated = true;
+          // stores.stores.auth.user = JSON.parse(user);
+        }
+      );
+      // console.log('db', db);
+    } else {
+      const api = new Api(null, events);
+      stores.init(db, events, api, onError).then(
+        (data) => {
+          console.log(stores);
+          stores.stores.auth.setShowSplash(false);
+          stores.stores.auth.authenticated = false;
+          sockets = new Sockets();
+          sockets.init(events);
+          document.getElementById('loading').outerHTML = '';
+          render();
+        }
+      );
     }
-  );
-  // console.log('db', db);
-} else {
-  const api = new Api(null, events);
-  stores.init(db, events, api, onError).then(
-    (data) => {
-      console.log(stores);
-      stores.stores.auth.setShowSplash(false);
-      stores.stores.auth.authenticated = false;
-      sockets = new Sockets();
-      sockets.init(events);
-      render();
-    }
-  );
-}
-
+  }
+);
 
 if (module.hot) {
   /*

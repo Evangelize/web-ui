@@ -14,8 +14,9 @@ import {
   googleProvider,
   facebookProvider,
   anonymousAuthenticate,
-  googleAuthenticate,
-  facebookAuthenticate,
+  googleAuthenticateRedirect,
+  facebookAuthenticateRedirect,
+  getRedirectResult,
   currentUser,
   fetchProvidersForEmail,
 } from '../lib/auth';
@@ -103,23 +104,25 @@ export default class Auth {
 
   async login(type) {
     const self = this;
+    const priorAuth = sessionStorage.getItem('auth-issue');
     let results;
     let error;
     let providers;
+    let currUser = currentUser();
     if (this.user && this.user.firebase) {
       results = this.user.firebase;
     } else {
       try {
-        if (type === 'facebook' && self.user && self.user.firebase) {
-          results = await currentUser().linkWithPopup(facebookProvider);
+        if (type === 'facebook' && priorAuth) {
+          results = await facebookAuthenticateRedirect();
         } else if (type === 'facebook') {
-          results = await facebookAuthenticate();
-        } else if (type === 'google' && self.user && self.user.firebase) {
-          results = await currentUser().linkWithPopup(googleProvider);
+          results = await facebookAuthenticateRedirect();
+        } else if (type === 'google' && priorAuth) {
+          results = await googleAuthenticateRedirect();
         } else if (type === 'google') {
-          results = await googleAuthenticate();
+          results = await googleAuthenticateRedirect();
         }
-        const currUser = currentUser();
+        currUser = currentUser();
         self.user = {
           firebase: currUser,
           db: null,
@@ -200,6 +203,7 @@ export default class Auth {
   }
 
   async getAuthToken(force) {
+    const redirectResult = await getRedirectResult();
     this.authToken = await this.user.firebase.getIdToken(true);
     return this.authToken;
   }
