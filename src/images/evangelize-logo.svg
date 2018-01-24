@@ -8,12 +8,12 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
-   width="500"
-   height="140"
-   viewBox="0 0 400 112"
+   width="320"
+   height="80"
+   viewBox="0 0 256 64"
    preserveAspectRatio="xMidYMid meet"
    id="svg2"
-   inkscape:version="0.91 r"
+   inkscape:version="0.92.2 (unknown)"
    sodipodi:docname="evangelize-logo.svg">
   <defs
      id="defs14" />
@@ -27,12 +27,12 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1009"
+     inkscape:window-height="1133"
      id="namedview12"
      showgrid="false"
-     inkscape:zoom="1.45"
-     inkscape:cx="394.73661"
-     inkscape:cy="0.34630819"
+     inkscape:zoom="2.0506097"
+     inkscape:cx="314.80615"
+     inkscape:cy="-92.244722"
      inkscape:window-x="0"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -43,27 +43,43 @@
     <sodipodi:guide
        position="1035.8974,284.10256"
        orientation="0,1"
-       id="guide4146" />
+       id="guide4146"
+       inkscape:locked="false" />
     <sodipodi:guide
-       position="107.30159,111.74603"
+       position="266.2069,56.827586"
        orientation="0,1"
-       id="guide4150" />
+       id="guide4150"
+       inkscape:locked="false" />
     <sodipodi:guide
-       position="85.079365,0.63492063"
+       position="298.48276,5.5172414"
        orientation="0,1"
-       id="guide4152" />
+       id="guide4152"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="1328.2051,366.15385"
        orientation="1,0"
-       id="guide4154" />
+       id="guide4154"
+       inkscape:locked="false" />
     <sodipodi:guide
-       position="0.63492063,139.04762"
+       position="11.034483,85.793103"
        orientation="1,0"
-       id="guide4156" />
+       id="guide4156"
+       inkscape:locked="false" />
     <sodipodi:guide
        position="400,76.825397"
        orientation="1,0"
-       id="guide4167" />
+       id="guide4167"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="72.275862,76.965517"
+       orientation="1,0"
+       id="guide982"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="241.37931,88"
+       orientation="1,0"
+       id="guide834"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
      id="metadata4">
@@ -79,26 +95,63 @@ Created by potrace 1.13, written by Peter Selinger 2001-2015
 </rdf:RDF>
 </metadata>
   <g
-     transform="matrix(0.1,0,0,-0.1,0,112)"
+     transform="matrix(0.1,0,0,-0.1,-15.448276,66.325554)"
      id="g6"
      style="fill:#000000;stroke:none">
     <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.69999999;stroke-miterlimit:4;stroke-dasharray:0.7, 4.2;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 797.57974,936.83406 -438.64063,-1.75 -217.81249,-380.73438 220.84375,-379.00001 438.64062,1.7344 217.79691,380.74999 -220.82816,379 z M 381.67349,768.0528 l 164.375,0 164.39062,0 37.51564,-65.85938 37.81249,-65.875 -73.03125,0 c -40.09466,0 -72.75,-0.56784 -72.75,-1.14062 0,-0.57278 9.16402,-16.90561 20.04688,-36.09374 11.1692,-19.18815 20.04687,-35.2241 20.04687,-35.79688 0,-0.57278 -8.87767,-16.60873 -20.04687,-35.79688 -10.88286,-19.18815 -20.04688,-35.52097 -20.04688,-36.09375 0,-0.57277 32.65534,-1.14062 72.75,-1.14062 l 73.03125,0 -37.81249,-65.875 -37.51564,-65.85938 -164.39062,0 -164.375,0 5.71875,9.45313 c 19.47451,32.0757 110.26563,193.02137 110.26563,195.3125 0,2.29112 -90.79113,163.2473 -110.26563,195.60937 l -5.71875,9.15625 z"
+       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.94716982"
+       d="m 877.24134,250.84175 1691.03456,5.51724"
+       id="path836"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.46667728;stroke-miterlimit:4;stroke-dasharray:0.46667728, 2.80006368;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 700.1513,591.5314 407.71756,590.3647 262.50593,336.53598 409.73845,83.863563 702.17218,85.019853 847.37342,338.85895 Z M 422.87416,479.00797 h 109.58583 109.59623 l 25.011,-43.90726 25.2089,-43.91766 h -48.68861 c -26.73038,0 -48.5011,-0.37857 -48.5011,-0.76043 0,-0.38186 6.10949,-11.27066 13.36489,-24.06304 7.4463,-12.79239 13.36488,-23.48327 13.36488,-23.86513 0,-0.38186 -5.91858,-11.07274 -13.36488,-23.86513 -7.2554,-12.79239 -13.36489,-23.68119 -13.36489,-24.06305 0,-0.38185 21.77072,-0.76043 48.5011,-0.76043 h 48.68861 l -25.2089,-43.91766 -25.011,-43.90726 H 532.45999 422.87416 l 3.81259,6.30223 c 12.9833,21.38429 73.51209,128.68384 73.51209,130.2113 0,1.52745 -60.5288,108.83401 -73.51209,130.40921 z"
        id="path3355"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:91.64487457px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="1055.9097"
-       y="-405.51657"
-       id="text3376"
-       sodipodi:linespacing="125%"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:170.66667175px;line-height:0px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="1373.7931"
+       y="-744.82758"
+       id="text163"
        transform="scale(1,-1)"><tspan
          sodipodi:role="line"
-         id="tspan3378"
-         x="1055.9097"
-         y="-405.51657"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:412.40194702px;font-family:'Nexa Rust Slab';-inkscape-font-specification:'Nexa Rust Slab Heavy';fill:#ffffff;fill-opacity:1">vangelize</tspan></text>
+         id="tspan161"
+         x="1373.7931"
+         y="-696.2099"
+         style="stroke-width:8px" /></text>
+    <circle
+       style="opacity:1;fill:#7b1fa2;fill-opacity:1;stroke:none;stroke-width:53.49485397;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.94716982"
+       id="path838"
+       cx="1735.8622"
+       cy="-263.94522"
+       r="79.310349"
+       transform="scale(1,-1)"
+       inkscape:transform-center-x="-2.4827586"
+       inkscape:transform-center-y="0.68965517" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:138.66667175px;line-height:0px;font-family:Sawasdee;-inkscape-font-specification:Sawasdee;letter-spacing:0px;word-spacing:0px;fill:#fceded;fill-opacity:1;stroke:none;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="919.76331"
+       y="-110.0893"
+       id="text980"
+       transform="scale(1,-1)"><tspan
+         sodipodi:role="line"
+         id="tspan978"
+         x="919.76331"
+         y="-110.0893"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:128px;font-family:Sawasdee;-inkscape-font-specification:Sawasdee;fill:#fceded;fill-opacity:1;stroke-width:8px">Helping Spread The Gospel</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:170.66667175px;line-height:0px;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="855.17242"
+       y="-325.06564"
+       id="text159"
+       transform="scale(1,-1)"><tspan
+         sodipodi:role="line"
+         id="tspan157"
+         x="855.17242"
+         y="-325.06564"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:362.66665649px;font-family:Sawasdee;-inkscape-font-specification:'Sawasdee Bold';fill:#fffcfc;fill-opacity:1;stroke-width:8px">Evangelize</tspan></text>
   </g>
 </svg>
