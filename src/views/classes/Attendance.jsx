@@ -9,12 +9,14 @@ import Avatar from 'material-ui/Avatar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import MediaQuery from 'react-responsive';
 import MenuItem from 'material-ui/MenuItem';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
+import SelectField from 'material-ui/SelectField';
 import { ToolbarGroup } from 'material-ui/Toolbar';
 import { Grid, Row, Col } from 'react-bootstrap';
 import NavToolBar from '../../components/NavToolBar';
@@ -96,40 +98,31 @@ class Attendance extends Component {
         <Row>
           <Col xs={12} sm={12} md={12} lg={12}>
             <NavToolBar navLabel="Attendance" goBackTo="/dashboard">
-              <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
-                <RaisedButton
-                  label="Add Attendance"
-                  secondary
-                  onClick={this.handleOpenDialog}
-                />
+              <ToolbarGroup style={{ float: 'right' }} lastChild>
+                <MediaQuery query="(min-device-width: 1024px)">
+                  <RaisedButton
+                    style={{ marginRight: 10 }}
+                    label="Add Attendance"
+                    secondary
+                    onClick={this.handleOpenDialog}
+                  />
+                </MediaQuery>
+                <MediaQuery query="(max-device-width: 1023px)">
+                  <IconMenu
+                    iconButtonElement={
+                      <IconButton touch>
+                        <NavigationExpandMoreIcon />
+                      </IconButton>
+                    }
+                  >
+                    <MenuItem
+                      primaryText="Add Attendance"
+                      onClick={this.handleOpenDialog}
+                    />
+                  </IconMenu>
+                </MediaQuery>
               </ToolbarGroup>
             </NavToolBar>
-          </Col>
-        </Row>
-        <Row>
-
-          <Col xs={12} sm={4} md={4} lg={4}>
-            <DropDownMenu value={this.classGrouping.id} ref="divisionConfig" onChange={this.selectedDivisionConfig} style={{ marginRight: '12px' }}>
-              {classes.getDivisionConfigs().map((config) =>
-                <MenuItem key={config.id} value={config.id} label={config.title} primaryText={config.title} />
-              )}
-            </DropDownMenu>
-          </Col>
-          <Col xs={12} sm={4} md={4} lg={4}>
-            <DatePicker
-              hintText="Start Date"
-              floatingLabelText="Start Date"
-              value={moment(this.start).toDate()}
-              onChange={((...args) => this.changeDate('start', ...args))}
-            />
-          </Col>
-          <Col xs={12} sm={4} md={4} lg={4}>
-            <DatePicker
-              hintText="End Date"
-              floatingLabelText="End Date"
-              value={moment(this.end).toDate()}
-              onChange={((...args) => this.changeDate('end', ...args))}
-            />
           </Col>
         </Row>
         <Row>
@@ -144,6 +137,38 @@ class Attendance extends Component {
                   </Avatar>
                 }
               />
+              <CardMedia>
+                <Row style={{ padding: 10 }}>
+                  <Col xs={12} sm={4} md={4} lg={4}>
+                    <SelectField
+                      value={this.classGrouping.id}
+                      ref="divisionConfig"
+                      onChange={this.selectedDivisionConfig}
+                      floatingLabelText="Category"
+                    >
+                      {classes.getDivisionConfigs().map((config) =>
+                        <MenuItem key={config.id} value={config.id} label={config.title} primaryText={config.title} />
+                      )}
+                    </SelectField>
+                  </Col>
+                  <Col xs={12} sm={4} md={4} lg={4}>
+                    <DatePicker
+                      hintText="Start Date"
+                      floatingLabelText="Start Date"
+                      value={moment(this.start).toDate()}
+                      onChange={((...args) => this.changeDate('start', ...args))}
+                    />
+                  </Col>
+                  <Col xs={12} sm={4} md={4} lg={4}>
+                    <DatePicker
+                      hintText="End Date"
+                      floatingLabelText="End Date"
+                      value={moment(this.end).toDate()}
+                      onChange={((...args) => this.changeDate('end', ...args))}
+                    />
+                  </Col>
+                </Row>
+              </CardMedia>
               <CardMedia>
                 <List>
                   {classes.getDailyAttendanceByDivision(this.classGrouping.id, this.start, this.end).map((day, index) =>

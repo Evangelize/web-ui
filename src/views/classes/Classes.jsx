@@ -7,6 +7,11 @@ import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
 import Avatar from 'material-ui/Avatar';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import MediaQuery from 'react-responsive';
+import MenuItem from 'material-ui/MenuItem';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import { ToolbarGroup } from 'material-ui/Toolbar';
@@ -19,9 +24,6 @@ const styles = {
     paddingTop: 16,
     marginBottom: 12,
     fontWeight: 400,
-  },
-  toggle: {
-
   },
 };
 
@@ -50,21 +52,24 @@ class Classes extends Component {
           <Row>
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar navLabel="Classes" goBackTo="/dashboard">
-                <ToolbarGroup key={3} style={{ float: "right" }} lastChild>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Toggle
-                      label="Sortable"
-                      labelPosition="right"
-                      style={styles.toggle}
-                      onToggle={((...args) => this.toggleSortable(...args))}
-                      toggled={this.sortable}
+                <ToolbarGroup style={{ float: 'right' }} lastChild>
+                  <IconMenu
+                    iconButtonElement={
+                      <IconButton touch>
+                        <NavigationExpandMoreIcon />
+                      </IconButton>
+                    }
+                  >
+                    <MenuItem
+                      primaryText="Sortable"
+                      onClick={this.toggleSortable}
+                      checked={this.sortable}
                     />
-                  </div>
-                  <RaisedButton
-                    label="Add Class"
-                    secondary
-                    onClick={this.handleNewClass}
-                  />
+                    <MenuItem
+                      primaryText="Add Class"
+                      onClick={this.handleNewClass}
+                    />
+                  </IconMenu>
                 </ToolbarGroup>
               </NavToolBar>
             </Col>
@@ -73,9 +78,9 @@ class Classes extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <Card>
                 <CardHeader
-                  title={"Classes"}
-                  subtitle={"All classes"}
-                  avatar={<Avatar>{"C"}</Avatar>}
+                  title={'Classes'}
+                  subtitle={'All classes'}
+                  avatar={<Avatar>{'C'}</Avatar>}
                 />
                 <CardMedia>
                   <ListClasses sortable={this.sortable} />

@@ -109,9 +109,7 @@ class Login extends Component {
             <div className="login">
               <div className="login-header"
                   style={{
-                    backgroundColor: this.state.muiTheme.rawTheme.palette.primary1Color,
-                    color: this.state.muiTheme.rawTheme.palette.alternateTextColor,
-                    backgroundImage: 'url(/images/evangelize-logo.svg)',
+                    background: 'rgb(123, 31, 162) url(/images/evangelize-logo.svg) no-repeat 50% 50%',
                   }}
               >
               </div>

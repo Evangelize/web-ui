@@ -7,6 +7,10 @@ import Card from 'material-ui/Card/Card';
 import CardHeader from 'material-ui/Card/CardHeader';
 import CardMedia from 'material-ui/Card/CardMedia';
 import Avatar from 'material-ui/Avatar';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import MenuItem from 'material-ui/MenuItem';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import { ToolbarGroup } from 'material-ui/Toolbar';
@@ -112,20 +116,23 @@ class WorshipServices extends Component {
             <Col xs={12} sm={12} md={12} lg={12}>
               <NavToolBar navLabel="Worship Services" goBackTo="/dashboard">
                 <ToolbarGroup key={3} style={{ float: 'right' }} lastChild>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Toggle
-                      label="Sortable"
-                      labelPosition="right"
-                      style={styles.toggle}
-                      onToggle={((...args) => this.toggleSortable(...args))}
-                      toggled={this.sortable}
+                  <IconMenu
+                    iconButtonElement={
+                      <IconButton touch>
+                        <NavigationExpandMoreIcon />
+                      </IconButton>
+                    }
+                  >
+                    <MenuItem
+                      primaryText="Sortable"
+                      onClick={this.toggleSortable}
+                      checked={this.sortable}
                     />
-                  </div>
-                  <RaisedButton
-                    label="Add Service"
-                    secondary
-                    onClick={this.handleOpenDialog}
-                  />
+                    <MenuItem
+                      primaryText="Add Service"
+                      onClick={this.handleOpenDialog}
+                    />
+                  </IconMenu>
                 </ToolbarGroup>
               </NavToolBar>
             </Col>
