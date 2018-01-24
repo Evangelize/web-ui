@@ -111,7 +111,7 @@ const eventHandler = (payload) => {
     if (routingStore.location.search.includes('?next=')) {
       const path = routingStore.location.search.replace('?next=', '');
       routingStore.push(path);
-    } else {
+    } else if (routingStore.location.pathname === '/login') {
       routingStore.push('/dashboard');
     }
   }
