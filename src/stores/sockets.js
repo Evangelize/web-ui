@@ -1,5 +1,5 @@
 import ReconnectableWebSocket from 'reconnectable-websocket';
-import reactCookie from 'react-cookie';
+import Cookie from 'js-cookie';
 import 'setimmediate';
 import settings from '../../config/webSettings';
 
@@ -27,11 +27,12 @@ export default class Sockets {
   }
 
   setupWs() {
-    const token = reactCookie.load('accessToken');
+    const token = Cookie.get('accessToken');
     if (token) {
       const proto = (window.location.protocol === 'http:') ? 'ws:' : 'wss:';
       let websocketUri = (settings.websocket && settings.websocket.host) ? `//${settings.websocket.host}` : '//localhost:3002';
       websocketUri = `${proto}${websocketUri}?token=${token}`;
+      //websocketUri = `${proto}${websocketUri}`;
       this.client = new ReconnectableWebSocket(
         websocketUri,
         undefined,
@@ -40,6 +41,8 @@ export default class Sockets {
         }
       );
       this.client.onmessage = this.onMessage.bind(this);
+      this.client.onerror = this.onError.bind(this);
+      this.client.onclose = this.onClose.bind(this);
       this.client.onopen = this.onMessage.bind(this);
       this.client.open();
       console.log('websocket', this.client);
@@ -59,11 +62,23 @@ export default class Sockets {
     }
   }
 
+  onError(e) {
+    console.log(e);
+  }
+
+  onClose(e) {
+    console.log(e);
+    this.events.emit('auth', 'refresh-jwt');
+  }
+
   onMessage(message) {
     console.log('socket:onMessage', message);
     const data = (message.data) ? JSON.parse(message.data) : {};
     if ('payload' in data) this.events.emit('db', data);
     if (data.type === 'info') this.events.emit('broadcast', data);
+    if (message.type === 'open') {
+      this.events.emit('auth', 'refresh-data');
+    }
   }
 
 }

@@ -26,4 +26,15 @@ export default class {
       }
     );
   }
+
+  refreshJwt(type, token) {
+    return this.request(
+      'post',
+      '/api/auth/refresh',
+      {
+        type,
+        token,
+      }
+    );
+  }
 }

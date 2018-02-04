@@ -149,6 +149,23 @@ export default class Auth {
     return Cookie.get(cookieUserKey);
   }
 
+  @action async refreshJwt() {
+    let retVal;
+    try {
+      const { jwt, user } = await this.checkUser();
+      this.user.db = user;
+      this.db.setEntityId(this.user.db.person.entityId || null);
+      const tokn = jwtDecode(jwt);
+      Cookie.set(accessToken, jwt, { expires: moment(tokn.exp, 'X').toDate() });
+      retVal = tokn;
+    } catch (e) {
+      console.log(e);
+      retVal = e;
+    }
+
+    return retVal;
+  }
+
   async finalizeLogin() {
     await this.getAuthToken();
     // this.setupRefreshToken();
@@ -198,8 +215,12 @@ export default class Auth {
     this.events.on('auth', this.eventHandler.bind(this));
   }
 
-  eventHandler(event) {
-    console.log(event);
+  eventHandler(type, payload) {
+    if (type === 'refresh-jwt') {
+      this.refreshJwt();
+    } else if (type === 'refresh-data') {
+      this.getAllTables();
+    }
   }
 
   async getAuthToken(force) {
