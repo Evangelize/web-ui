@@ -215,7 +215,7 @@ export default class Jobs {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.priority = newPos;
       this.db.updateStore('jobs', record, false);
     }
@@ -278,7 +278,7 @@ export default class Jobs {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.confirmed = confirmed;
       this.db.updateStore('memberJobPreferences', record, false);
     }

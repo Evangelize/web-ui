@@ -1058,7 +1058,7 @@ export default class Classes {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.confirmed = confirm;
       this.db.updateStore('divisionClassTeachers', record, false);
     }
@@ -1073,7 +1073,7 @@ export default class Classes {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.order = newPos;
       this.db.updateStore('classes', record, false);
     }
@@ -1180,7 +1180,7 @@ export default class Classes {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.order = newPos;
       retVal = this.db.updateStore('divisionConfigs', record, false);
     }
@@ -1237,7 +1237,7 @@ export default class Classes {
       ]
     );
     if (record) {
-      record = record.valueOf();
+      record = toJS(record);
       record.position = newPos;
       retVal = this.db.updateStore('divisions', record, false);
     }
