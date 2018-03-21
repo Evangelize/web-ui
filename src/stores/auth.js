@@ -263,7 +263,11 @@ export default class Auth {
   }
 
   async getAllTables() {
-    return await this.api.utils.getAllTables(this.db.store.lastUpdate);
+    if ('utils' in this.api) {
+      return await this.api.utils.getAllTables(this.db.store.lastUpdate);
+    } else {
+      return Promise.reject();
+    }
   }
 
   @computed get userFullName() {
