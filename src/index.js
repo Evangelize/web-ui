@@ -22,6 +22,7 @@ import { getRedirectResult, fetchProvidersForEmail, facebookProvider, firebaseAu
 import Api from './api';
 import settings from '../config/webSettings';
 
+const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 const beforeSend = (xhr) => {
   xhr.setRequestHeader('authorization', 'Bearer');
 };
@@ -66,6 +67,7 @@ const rootElement = document.getElementById('root');
 const token = reactCookie.load('accessToken');
 const localAuthentication = async () => {
   let user;
+  // const db = indexedDB.open(`firebase:authUser:${settings.firebase.apiKey}:[DEFAULT]`, 1);
   try {
     const redirectResult = await getRedirectResult();
     if (redirectResult.credential) {

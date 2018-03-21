@@ -4,6 +4,7 @@ console.log(settings.firebase);
 firebase.initializeApp(settings.firebase);
 
 export const ref = firebase.database().ref();
+export const fb = firebase;
 export const firebaseAuth = firebase.auth;
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const facebookProvider = new firebase.auth.FacebookAuthProvider();

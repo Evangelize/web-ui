@@ -10,6 +10,7 @@ import axios from 'axios';
 import Cookie from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 import {
+  fb,
   firebaseAuth,
   googleProvider,
   facebookProvider,
@@ -42,6 +43,11 @@ export default class Auth {
   @observable authToken;
 
   constructor(db, events, api, onError) {
+    const auth = fb.auth();
+    auth.onAuthStateChanged((user) => {
+      console.log('onAuthStateChanged:', user);
+    });
+
     if (db) {
       this.setupDb(db);
     }
@@ -75,25 +81,15 @@ export default class Auth {
   setupAuth(localAuth) {
     const self = this;
     const auth = firebaseAuth();
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        const currUser = currentUser();
-        self.user = {
-          firebase: user,
-          db: null,
-          userId: user.uid,
-        };
-        Cookie.set(cookieUserKey, self.userId, { expires: 7 });
-        console.log('user auth', user);
-        self.finalizeLogin();
-      } else {
-        self.user.firebase = null;
-        self.user.db = null;
-        self.userId = null;
-        Cookie.remove(cookieUserKey);
-        console.log('user logged out');
-      }
-    });
+    const currUser = currentUser();
+    self.user = {
+      firebase: currUser,
+      db: null,
+      userId: currUser.uid,
+    };
+    Cookie.set(cookieUserKey, currUser.uid, { expires: 7 });
+    console.log('user auth', currUser);
+    self.finalizeLogin();
     auth.getUid(localAuth.uid);
   }
 
@@ -109,6 +105,8 @@ export default class Auth {
     let error;
     let providers;
     let currUser = currentUser();
+    console.log(fb.auth().Persistence);
+    await fb.auth().setPersistence(fb.auth.Auth.Persistence.LOCAL);
     if (this.user && this.user.firebase) {
       results = this.user.firebase;
     } else {
