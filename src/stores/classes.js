@@ -104,13 +104,15 @@ export default class Classes {
           filter((rec) => rec.deletedAt === null &&
             excludes.indexOf(rec.id) === -1
           ),
-          sortBy('order'),
+          sortBy(['order']),
         ]
       );
     } else {
       records = this.db.store.filter(
-        'classes', [
-          sortBy('order'),
+        'classes',
+        [
+          filter((rec) => rec.deletedAt === null),
+          sortBy(['order']),
         ]
       );
     }
@@ -204,7 +206,7 @@ export default class Classes {
         filter((rec) => rec.deletedAt === null &&
           rec.divisionYear === yearId
         ),
-        sortBy('position'),
+        sortBy(['position']),
       ]
     );
     return records;
@@ -216,7 +218,7 @@ export default class Classes {
         filter((rec) => rec.deletedAt === null &&
           rec.divisionYear === yearId
         ),
-        sortBy('end'),
+        sortBy(['end']),
       ]
     );
     return records;
@@ -231,7 +233,7 @@ export default class Classes {
           rec.start <= now &&
           rec.divisionYear === yearId
         ),
-        sortBy('end'),
+        sortBy(['end']),
         first,
       ]
     );
@@ -241,7 +243,7 @@ export default class Classes {
     const record = this.db.store.filter(
       'divisions', [
         filter((rec) => rec.deletedAt === null && rec.id === id),
-        sortBy('end'),
+        sortBy(['end']),
         first,
       ]
     );
@@ -254,7 +256,7 @@ export default class Classes {
     const latest = toJS(this.db.store.filter(
       'divisionClassAttendance', [
         filter((rec) => rec.deletedAt === null && rec.attendanceDate >= now && rec.day === day),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
       ]
     ));
     const latestR = latest.reduce(
@@ -282,7 +284,7 @@ export default class Classes {
       'divisionClassAttendance', [
         filter((rec) => rec.deletedAt === null && rec.attendanceDate >= begin &&
           rec.attendanceDate <= end && rec.day === day),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
       ]
     )).reduce(
       (mapping, d1) => {
@@ -355,7 +357,7 @@ export default class Classes {
     let latest = this.db.store.filter(
       'divisionClassAttendance', [
         filter((rec) => rec.deletedAt === null && rec.attendanceDate >= startMonth && rec.attendanceDate <= endMonth),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
         reverse,
       ]
     );
@@ -410,7 +412,7 @@ export default class Classes {
           rec.attendanceDate <= endMonth &&
           (divisionClasses.indexOf(rec.divisionClassId) > -1)
         ),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
         reverse,
       ]
     );
@@ -452,7 +454,7 @@ export default class Classes {
           rec.attendanceDate >= begin &&
           rec.attendanceDate <= end &&
           (divisionClasses.indexOf(rec.divisionClassId) > -1)),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
       ]
     );
     return records;
@@ -481,7 +483,7 @@ export default class Classes {
       );
       const classes = self.db.store.filter(
         'classes', [
-          sortBy('id'),
+          sortBy(['id']),
         ]
       );
 
@@ -525,7 +527,7 @@ export default class Classes {
           rec.endDate >= now &&
           rec.startDate <= now
         ),
-        sortBy('end'),
+        sortBy(['end']),
       ]
     );
     return record;
@@ -541,7 +543,7 @@ export default class Classes {
           rec.start <= now &&
           rec.divisionConfigId === divisionConfigId
         ),
-        sortBy('end'),
+        sortBy(['end']),
         first,
       ]
     );
@@ -558,7 +560,7 @@ export default class Classes {
           rec.end >= now &&
           rec.start <= now
         ),
-        sortBy('end'),
+        sortBy(['end']),
       ]
     );
     return record;
@@ -575,7 +577,7 @@ export default class Classes {
           ids.indexOf(rec.divisionId) > -1 &&
           rec.classId === classId
         ),
-        sortBy('end'),
+        sortBy(['end']),
         first,
       ]
     );
@@ -616,7 +618,7 @@ export default class Classes {
           filter((rec) => rec.deletedAt === null &&
             rec.yearId === year.id
           ),
-          sortBy('dow')
+          sortBy(['dow']),
         ]
       );
     }
@@ -663,8 +665,7 @@ export default class Classes {
         return newCls;
       }
     );
-    const result = sortBy(rec => rec.order)(mapCls);
-
+    const result = mapCls.sort((a, b) => a.order - b.order);
     return result;
   }
 
@@ -741,7 +742,7 @@ export default class Classes {
       const divisionClassTeachers = self.db.store.filter(
         'divisionClassTeachers', [
           filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-          sortBy('classId'),
+          sortBy(['classId']),
         ]
       );
       const people = self.db.store.filter(
@@ -807,7 +808,7 @@ export default class Classes {
           divisionClasses.indexOf(rec.divisionClassId) > -1
         ),
         uniqBy('peopleId'),
-        sortBy('createdAt'),
+        sortBy(['createdAt']),
       ]
     );
   }
@@ -828,7 +829,7 @@ export default class Classes {
     const divisionClassTeachers = self.db.store.filter(
       'divisionClassTeachers', [
         filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-        sortBy('classId'),
+        sortBy(['classId']),
       ]
     );
     const people = self.db.store.filter(
@@ -855,7 +856,7 @@ export default class Classes {
     const divisionClassTeachers = self.db.store.filter(
       'divisionClassTeachers', [
         filter((rec) => rec.deletedAt === null && rec.day === day && rec.divisionClassId === divisionClassId),
-        sortBy('classId'),
+        sortBy(['classId']),
       ]
     );
     const people = self.db.store.filter(
@@ -979,7 +980,7 @@ export default class Classes {
         filter((rec) => rec.deletedAt === null &&
           rec.yearId === yearId
         ),
-        sortBy('dow'),
+        sortBy(['dow']),
       ]
     );
   }
@@ -988,7 +989,7 @@ export default class Classes {
     return this.db.store.filter(
       'classMeetingDays', [
         filter((rec) => rec.deletedAt === null),
-        sortBy('day'),
+        sortBy(['day']),
       ]
     );
   }
@@ -1006,7 +1007,7 @@ export default class Classes {
     const records = this.db.store.filter(
       'notes', [
         filter((rec) => rec.deletedAt === null),
-        sortBy('createdAt'),
+        sortBy(['createdAt']),
       ]
     );
     return records;
@@ -1065,7 +1066,8 @@ export default class Classes {
 
   }
 
-  async updateClassOrder(classId, currentPos, newPos) {
+  updateClassOrder(classId, newPos) {
+    let retVal;
     let record = this.db.store.filter(
       'classes', [
         filter((rec) => rec.deletedAt === null && rec.id === classId),
@@ -1075,9 +1077,10 @@ export default class Classes {
     if (record) {
       record = toJS(record);
       record.order = newPos;
+      retVal = record;
       this.db.updateStore('classes', record, false);
     }
-
+    return retVal;
   }
 
   updateClassAttendance(divisionClassId, now, count, dayId) {

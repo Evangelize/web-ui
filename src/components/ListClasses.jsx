@@ -91,7 +91,28 @@ class ListClasses extends Component {
     const { classes } = this.props;
     const listClasses = classes.getClasses();
     const { cards } = this.state;
-    const dragClass = listClasses[dragObject.oldIndex];
+    const movedItem = listClasses[dragObject.oldIndex];
+    const remainingItems = listClasses.filter((item, index) => index !== dragObject.oldIndex);
+    const reorder = (item, index) => {
+      return new Promise((resolve, reject) => {
+        const res = classes.updateClassOrder(item.id, index);
+        resolve(res);
+      });
+    };
+    const reorderedItems = [
+      ...remainingItems.slice(0, dragObject.newIndex),
+      movedItem,
+      ...remainingItems.slice(dragObject.newIndex)
+    ];
+    const promises = [];
+    reorderedItems.forEach((item, index) => {
+      promises.push(reorder(item, index));
+    });
+
+    Promise.all(promises).then(
+      (data) => console.log(data)
+    );
+    /*
     const hoverClass = listClasses[dragObject.newIndex];
     console.log('moveClass', dragClass, hoverClass);
 
@@ -117,6 +138,7 @@ class ListClasses extends Component {
         if (err) console.log(err);
       }
     );
+    */
   }
 
   render() {

@@ -209,7 +209,7 @@ export default class Worship {
           && rec.attendanceDate <= endMonth
           && presentTypes.includes(rec.attendanceTypeId)
         ),
-        sortBy('attendanceDate'),
+        sortBy(['attendanceDate']),
         reverse,
       ]
     );

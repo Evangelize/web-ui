@@ -222,7 +222,7 @@ export default class App extends Component {
                 ]}
               />
               <ListItem
-                value={"/settings"}
+                value={'/settings'}
                 primaryText="Settings"
                 onClick={((...args) => this.handleLeftNavChange('/settings', ...args))}
               />
