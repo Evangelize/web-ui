@@ -81,4 +81,38 @@ export class Database {
     this.lastUpdate = now;
     console.log('db updated', this.lastUpdate);
   }
+
+  clear() {
+    this.attendanceTypes.clear();
+    this.classMeetingDays.clear();
+    this.classes.clear();
+    this.divisionClassAttendance.clear();
+    this.divisionClassTeachers.clear();
+    this.divisionClasses.clear();
+    this.divisionConfigs.clear();
+    this.divisionYears.clear();
+    this.divisions.clear();
+    this.families.clear();
+    this.familyCheckingAccounts.clear();
+    this.familyPayments.clear();
+    this.groups.clear();
+    this.jobs.clear();
+    this.memberAttendance.clear();
+    this.memberJobAssignments.clear();
+    this.memberJobPreferences.clear();
+    this.memberGroups.clear();
+    this.memberSettings.clear();
+    this.notes.clear();
+    this.people.clear();
+    this.presentations.clear();
+    this.posts.clear();
+    this.students.clear();
+    this.teachers.clear();
+    this.thirdPartyLogins.clear();
+    this.users.clear();
+    this.worshipServiceJobs.clear();
+    this.worshipServices.clear();
+    this.yearClassStudents.clear();
+    this.yearMeetingDays.clear();
+  }
 }

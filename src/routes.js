@@ -130,6 +130,10 @@ const Schedules = Loadable({
   loader: () => import('./views/classes/Schedules' /* webpackChunkName: 'Schedules' */),
   loading: LoadingPage,
 });
+const SettingsMain = Loadable({
+  loader: () => import('./views/settings/Main' /* webpackChunkName: 'SettingsMain' */),
+  loading: LoadingPage,
+});
 const WorshipOverview = Loadable({
   loader: () => import('./views/worship/WorshipOverview' /* webpackChunkName: 'WorshipOverview' */),
   loading: LoadingPage,
@@ -335,6 +339,11 @@ export default () => [
         path: '/worship/attendance/types',
         exact: true,
         component: requireAuthentication(AttendanceTypes),
+      },
+      {
+        path: '/settings',
+        exact: true,
+        component: requireAuthentication(SettingsMain),
       },
     ],
   },

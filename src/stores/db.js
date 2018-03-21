@@ -212,4 +212,8 @@ export default class Db {
       }
     );
   }
+
+  @action clear() {
+    this.store.clear();
+  }
 }

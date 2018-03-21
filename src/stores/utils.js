@@ -52,6 +52,20 @@ export default class Utils {
     this.events = events;
   }
 
+  async resetDatabase() {
+    this.db.clear();
+    const data = await this.api.utils.getAllTables();
+    const payload = {
+      payload: {
+        data: {
+          collection: data,
+          type: 'initialize',
+        },
+      },
+    };
+    this.events.emit('db', payload);
+  }
+
   importUsers(data, families, people, reset) {
     return axios.post(
       '/api/import',
