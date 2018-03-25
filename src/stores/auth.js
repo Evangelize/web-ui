@@ -10,7 +10,7 @@ import axios from 'axios';
 import Cookie from 'js-cookie';
 import jwtDecode from 'jwt-decode';
 import {
-  fb,
+  firebaseApp,
   firebaseAuth,
   googleProvider,
   facebookProvider,
@@ -43,7 +43,7 @@ export default class Auth {
   @observable authToken;
 
   constructor(db, events, api, onError) {
-    const auth = fb.auth();
+    const auth = firebaseAuth;
     auth.onAuthStateChanged((user) => {
       console.log('onAuthStateChanged:', user);
     });
@@ -80,7 +80,7 @@ export default class Auth {
 
   setupAuth(localAuth) {
     const self = this;
-    const auth = firebaseAuth();
+    const auth = firebaseAuth;
     const currUser = currentUser();
     self.user = {
       firebase: currUser,
@@ -105,8 +105,8 @@ export default class Auth {
     let error;
     let providers;
     let currUser = currentUser();
-    console.log(fb.auth().Persistence);
-    await fb.auth().setPersistence(fb.auth.Auth.Persistence.LOCAL);
+    console.log(firebaseAuth.Persistence);
+    // await fb.auth().setPersistence(fb.auth.Auth.Persistence.LOCAL);
     if (this.user && this.user.firebase) {
       results = this.user.firebase;
     } else {
