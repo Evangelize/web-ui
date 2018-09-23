@@ -9,20 +9,11 @@ import moment from 'moment-timezone';
 import axios from 'axios';
 import Cookie from 'js-cookie';
 import jwtDecode from 'jwt-decode';
-import {
-  firebaseApp,
-  firebaseAuth,
-  googleProvider,
-  facebookProvider,
-  anonymousAuthenticate,
-  googleAuthenticateRedirect,
-  facebookAuthenticateRedirect,
-  getRedirectResult,
-  currentUser,
-  fetchProvidersForEmail,
-} from '../lib/auth';
+import { fb as firebase } from '../lib/auth';
 import request from '../lib/request';
 
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
 const cookieUserKey = 'evangelize-user-id';
 const accessToken = 'accessToken';
 
@@ -41,12 +32,10 @@ export default class Auth {
   };
   @observable userId;
   @observable authToken;
+  @observable checked = false;
 
   constructor(db, events, api, onError) {
-    const auth = firebaseAuth;
-    auth.onAuthStateChanged((user) => {
-      console.log('onAuthStateChanged:', user);
-    });
+    const self = this;
 
     if (db) {
       this.setupDb(db);
@@ -60,6 +49,25 @@ export default class Auth {
     if (onError) {
       this.setupError(onError);
     }
+
+    firebase.auth().onAuthStateChanged((user) => {
+      self.checked = true;
+      if (user) {
+        self.user.firebase = user;
+        self.userId = user.uid;
+        Cookie.set(cookieUserKey, self.userId, { expires: 7 });
+        console.log('user auth', user);
+        self.finalizeLogin();
+      } else {
+        self.user.firebase = null;
+        self.user.db = null;
+        self.userId = null;
+        Cookie.remove(cookieUserKey);
+        self.events.emit('app', 'no-user-loaded');
+        self.showSplash = false;
+        console.log('user logged out');
+      }
+    });
   }
 
   setupApi(api) {
@@ -78,10 +86,16 @@ export default class Auth {
     this.user = user;
   }
 
+  checkIfRoot = () => {
+    const url = new URL(window.location.href);
+    if (url.pathname === '/') {
+      this.showAdd = true;
+    }
+  }
+
   setupAuth(localAuth) {
     const self = this;
-    const auth = firebaseAuth;
-    const currUser = currentUser();
+    const currUser = firebase.auth().currentUser;
     self.user = {
       firebase: currUser,
       db: null,
@@ -99,44 +113,31 @@ export default class Auth {
   }
 
   async login(type) {
-    const self = this;
-    const priorAuth = sessionStorage.getItem('auth-issue');
     let results;
     let error;
     let providers;
-    let currUser = currentUser();
-    console.log(firebaseAuth.Persistence);
-    // await fb.auth().setPersistence(fb.auth.Auth.Persistence.LOCAL);
-    if (this.user && this.user.firebase) {
+    if (this.user.firebase) {
       results = this.user.firebase;
     } else {
       try {
-        if (type === 'facebook' && priorAuth) {
-          results = await facebookAuthenticateRedirect();
+        if (type === 'facebook' && this.user.firebase) {
+          results = await firebase.auth().currentUser.linkWithPopup(facebookProvider);
         } else if (type === 'facebook') {
-          results = await facebookAuthenticateRedirect();
-        } else if (type === 'google' && priorAuth) {
-          results = await googleAuthenticateRedirect();
+          results = await firebase.auth().signInWithRedirect(facebookProvider);
+        } else if (type === 'google' && this.user.firebase) {
+          results = await firebase.auth().currentUser.linkWithPopup(googleProvider);
         } else if (type === 'google') {
-          results = await googleAuthenticateRedirect();
+          results = await firebase.auth().signInWithRedirect(googleProvider);
         }
-        currUser = currentUser();
-        self.user = {
-          firebase: currUser,
-          db: null,
-          userId: currUser.uid,
-        };
-        self.userId = self.user.firebase.uid;
-        const req = request(self.userId);
-        this.api.init(req);
+        this.user.firebase = results;
+        this.userId = this.user.firebase.user.uid;
         await this.finalizeLogin();
       } catch (e) {
         error = e;
         if (error.code === 'auth/account-exists-with-different-credential') {
-          providers = await fetchProvidersForEmail(error.email);
+          providers = await firebase.auth().fetchProvidersForEmail(error.email);
           console.log(providers);
         }
-        this.error(e, null, null);
       }
     }
     console.log(error, results);
@@ -165,7 +166,9 @@ export default class Auth {
   }
 
   async finalizeLogin() {
-    await this.getAuthToken();
+    this.getAuthToken();
+    const req = request(this.userId);
+    this.events.emit('api', 'init', req);
     // this.setupRefreshToken();
     // this.setupRequest();
     try {
@@ -187,6 +190,7 @@ export default class Auth {
         this.setShowSplash(false);
         this.authenticated = true;
         this.events.emit('db', payload);
+        this.events.emit('app', 'user-loaded');
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.setShowSplash(false);
@@ -221,9 +225,8 @@ export default class Auth {
     }
   }
 
-  async getAuthToken(force) {
-    const redirectResult = await getRedirectResult();
-    this.authToken = await this.user.firebase.getIdToken(true);
+  getAuthToken(force) {
+    this.authToken = this.user.firebase.getIdToken(true)
     return this.authToken;
   }
 

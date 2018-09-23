@@ -86,7 +86,8 @@ module.exports = {
       'mobx-react',
       'react-router',
       'mobx',
-    ]
+      'socket.io-client',
+    ],
   },
 
   plugins: [

@@ -56,7 +56,7 @@ export default class MeetingDaysSelect extends Component {
                 />
                 <CardMedia>
                   <List>
-                    {[...Array(7)].map((x, i) =>
+                    {[0,1,2,3,4,5,6].map((x, i) =>
                       <div key={i}>
                         <Divider />
                         <ListItem

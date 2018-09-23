@@ -1,9 +1,9 @@
 import settings from '../../../config/webSettings';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 console.log(settings.firebase);
 export const firebaseApp = firebase.initializeApp(settings.firebase);
 
-export const ref = firebase.database().ref();
 export const fb = firebase;
 export const firebaseAuth = firebaseApp.auth();
 export const googleProvider = new firebase.auth.GoogleAuthProvider();

@@ -1,4 +1,4 @@
-import ReconnectableWebSocket from 'reconnectable-websocket';
+import io from 'socket.io-client';
 import Cookie from 'js-cookie';
 import 'setimmediate';
 import settings from '../../config/webSettings';
@@ -9,7 +9,7 @@ export default class Sockets {
   events;
   connected = false;
 
-  init(events, options, api) {
+  init(events, api, options) {
     if (options) {
       this.options = options;
     }
@@ -33,17 +33,16 @@ export default class Sockets {
       let websocketUri = (settings.websocket && settings.websocket.host) ? `//${settings.websocket.host}` : '//localhost:3002';
       websocketUri = `${proto}${websocketUri}?token=${token}`;
       //websocketUri = `${proto}${websocketUri}`;
-      this.client = new ReconnectableWebSocket(
+      this.client = io.connect(
         websocketUri,
-        undefined,
         {
-          automaticOpen: false,
+          autoConnect: false,
         }
       );
-      this.client.onmessage = this.onMessage.bind(this);
-      this.client.onerror = this.onError.bind(this);
-      this.client.onclose = this.onClose.bind(this);
-      this.client.onopen = this.onMessage.bind(this);
+      this.client.on('message', (...args) => this.onMessage(...args));
+      this.client.on('error', (...args) => this.onError(...args));
+      this.client.on('disconnect', (...args) => this.onClose(...args));
+      this.client.on('connect', (...args) => this.onMessage(...args));
       this.client.open();
       console.log('websocket', this.client);
       this.connected = true;
@@ -58,7 +57,7 @@ export default class Sockets {
 
   send(data) {
     if (this.connected) {
-      this.client.send(JSON.stringify(data));
+      this.client.emit('event', JSON.stringify(data));
     }
   }
 
@@ -73,10 +72,10 @@ export default class Sockets {
 
   onMessage(message) {
     console.log('socket:onMessage', message);
-    const data = (message.data) ? JSON.parse(message.data) : {};
+    const data = (message && message.data) ? message.data : {};
     if ('payload' in data) this.events.emit('db', data);
     if (data.type === 'info') this.events.emit('broadcast', data);
-    if (message.type === 'open') {
+    if (message && message.type === 'open') {
       this.events.emit('auth', 'refresh-data');
     }
   }

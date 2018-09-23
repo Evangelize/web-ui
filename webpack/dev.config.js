@@ -45,7 +45,7 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 }
 
 const webpackConfig = module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   context: path.resolve(__dirname, '..'),
   target: 'web',
   entry: {
@@ -282,20 +282,16 @@ const webpackConfig = module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'node-static',
       filename: 'node-static.js',
-      minChunks(module, count) {
-        const context = module.context;
-        return context && context.indexOf('node_modules') >= 0;
-      },
+      minChunks: Infinity,
     }),
     //catch all - anything used in more than one place
     new webpack.optimize.CommonsChunkPlugin({
       async: 'used-twice',
-      minChunks(module, count) {
-        return count >= 2;
-      },
+      minChunks: Infinity,
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
+      minChunks: Infinity,
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),

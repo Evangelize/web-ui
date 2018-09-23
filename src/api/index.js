@@ -56,6 +56,8 @@ export default class {
   eventHandler(type, payload) {
     if (type === 'update-request') {
       this.setupRequest(payload);
+    } else if (type === 'init') {
+      this.init(payload);
     }
   }
 }
